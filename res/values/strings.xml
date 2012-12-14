@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+<!-- Menu items -->
+    <string name="menu_list">List Entries</string>
+    <string name="menu_listlocal">List Local Entries</string>
+    <string name="menu_listall">List All Entries</string>
+    <string name="menu_listremote">List Remote Entries</string>
+    <string name="menu_synch">Synchronise</string>
+    <string name="menu_register">Register Phone</string>
+    <string name="menu_reset_synch">Reset Synchronised</string>
+    <string name="menu_reset_synch2">Reset Synchronised Entry</string>
+    <string name="menu_new_entry">New Entry</string>
+    <string name="menu_delete">Delete Entry</string>
+    <string name="menu_delete_photo">Delete Photo</string>
+    <string name="menu_map">Map</string>
+    <string name="menu_delsynch">Delete Synchronised</string>
+    <string name="menu_delall">Delete All</string>
+    <string name="menu_delremote">Delete Remote Entries</string>
+    <string name="menu_group_data">Download Group Data</string>
+    <string name="menu_photo">Select Photo</string>
+    <string name="menu_photo_synch">Synchronise All Images</string>
+    <string name="menu_video_synch">Synchronise All Videos</string>
+    <string name="menu_audio_synch">Synchronise All Audio</string>
+    <string name="menu_file_del">Delete Media Files</string>
+    <string name="menu_local">Local Entries</string>
+    <string name="menu_remote">Remote Entries</string>
+    <string name="update_menu_remote">Update Remote Entries</string>
+    <string name="menu_remove_local">Remove Local Entries</string>
+    <string name="menu_remove_remote">Remove Remote Entries</string>
+    <string name="menu_sat_map">Sat/Map</string>
+    <string name="my_location">My Location</string>
+    <string name="menu_compass">Compass On/Off</string>
+    <string name="menu_location">Location On/Off</string>
+    <string name="menu_select">Select</string>
+    <string name="menu_change_gps">Change GPS</string>
+    <string name="menu_reset">Reset Data</string>
+    <string name="menu_home">Home</string>
+    <string name="menu_help">Help</string>
+    <string name="menu_save">Save Entry</string>
+    <string name="menu_hierarchy">Show Hierarchy</string>
+    <string name="menu_find">Find Entry</string>
+    <string name="menu_get_data">Get Data</string>
+    <string name="menu_get_local_data">Get Local Data</string>
+    <string name="menu_del_entry">Delete Entry</string>
+    <string name="menu_del_all">Delete All Table Entries</string>
+    <string name="menu_del_synch">Delete Synchronised Entries</string>
+    <string name="menu_del_rem">Delete Remote Entries</string>
+    <string name="menu_del_fail">Delete Orphaned Entries</string>
+    <string name="menu_del_projall">Delete All Entries</string>
+    <string name="menu_select_table">Select Table</string>
+    <string name="menu_select_entry">Select Entry</string>
+    <string name="menu_return">Return</string>
+    <string name="menu_hide_local">Hide Local</string>
+    <string name="menu_show_local">Show Local</string>
+    <string name="menu_hide_remote">Hide Remote</string>
+    <string name="menu_show_remote">Show Remote</string>
+    <string name="menu_load_remote">Load Remote Data</string>
+    <string name="select_project">Select Project</string>
+    <string name="load_project">Load Project</string>
+    <string name="delete_project">Delete Project</string>
+    <string name="backup_project">Backup Project</string>  
+    <string name="load_backup">Load Backup File</string>  
+    <string name="email_backup">Email Backup File</string>
+		
+<!--  -->
+	<string name="loading_project">Loading Project...</string>
+	<string name="entries">entries</string>
+	<string name="gps_not_set">GPS Not Set</string>
+	<string name="photo_avail">Photo Available</string>
+	<string name="no_photo_avail">No Photo Available</string>
+	<string name="video_avail">Video Available</string>
+	<string name="no_video_avail">No Video Available</string>
+	<string name="audio_avail">Audio Available</string>
+	<string name="no_audio_avail">No Audio Available</string>
+	
+	<string name="delete_entry">Delete Entry</string>
+	<string name="confirm_delete_continue">This will delete the entry.\nContinue?</string>
+	<string name="reset_synch_message">Reset the synchronised status of this record?</string>
+	<string name="save_current_data">Save current data?\n\nIf No selected record will be deleted</string>
+	<string name="cannot_save_entry_1">Entry cannot be saved, primary key</string>	
+	<string name="cannot_save_entry_2">incomplete.\n\nContinue without saving?</string>	
+	<string name="change_location">Change Location Setting?</string>	
+	<string name="change_location_2">Location stored - tap again to update</string>	
+	<string name="change_location_3">This enables a stored location to be changed</string>	
+	<string name="clear_data">This will clear all data for this entry.\n\nContinue?</string>
+	<string name="confirm_home">Any entered data will be lost. To return to form press Cancel</string>	
+	<string name="entry_required">Entry required for primary key field</string>
+	<string name="set_location">Tap to Set Location</string>
+	<string name="location_search">Searching for location ...</string>
+	<string name="location_stored">Location stored. Use menu option to reset</string>
+	<string name="location_updated">Location Updated</string>
+	<string name="waiting_for_location">Location not obtained. Wait for position fix and try again</string>
+	<string name="location_error">Location not obtained. Wait for position fix and try again</string>
+	<string name="location_set">Location Set - Accuracy</string>
+	<string name="location_assigned">Location assigned - tap again to update</string>
+	<string name="location_obtained">Location obtained</string>
+	<string name="read_barcode">Tap to Read Barcode</string>
+	<string name="tap_to_select">Tap to Select</string>
+	<string name="add_record">Tap to Add Record</string>
+	<string name="list_records">List Records</string>
+	
+	<string name="photo">Photo</string>
+	<string name="video">Video</string>
+	<string name="audio">Audio</string>
+	<string name="photo_capture">Photo Capture</string>
+	<string name="capture_photo">Capture Photo</string>
+	<string name="select_photo">Select Photo Option</string>
+	<string name="update_photo">Tap to Update Photo</string>
+	<string name="add_photo">Tap to Add Photo</string>
+	<string name="image_error">Image not available</string>
+	<string name="photo_error">Photo Error</string>
+	<string name="photo_card_error">SD card may not be present. Required for photo capture</string>
+	<string name="image_required">WARNING: Picture is required</string>
+	<string name="select_image">Select Image</string>
+	<string name="update_video">Tap to Update Video</string>
+	<string name="video_file_error">Video Recorded But File Unavailable</string>
+	<string name="add_video">Tap to Add Video</string>
+	<string name="video_error">Video not available</string>
+	<string name="video_card_error">SD card not present. Required for video recording</string>
+	<string name="video_required">WARNING: Video is required</string>
+	<string name="audio_file_error">Audio Recorded But File Unavailable</string>
+	<string name="no_audio">No Audio Recorded</string>
+	<string name="audio_available">Audio Available</string>
+	<string name="audio_card_error">SD card not present. Required for audio recording</string>
+	<string name="audio_required">WARNING: Audio is required</string>
+	<string name="audio_stored">Audio recording stored. This will be overwritten.</string>
+	<string name="card_error">SD card not present. Required for photo, video and audio capture</string>
+	
+	<string name="project_required">Project Required</string>
+	<string name="project_name_required">Project name required</string>
+	<string name="delete_project_1">Delete Project</string>
+	<string name="delete_project_2">All data and photos will be lost!</string>
+	<string name="backup_project_1">Backup Project</string>
+	<string name="backup_project_2">Any existing backup file for</string>
+	<string name="backup_project_3">will be overwritten.\n\nContinue?</string>
+	<string name="load_backup_1">Load Backup File</string>
+	<string name="load_backup_2">Any existing data for</string>
+	<string name="load_backup_3">will be overwritten.\n\nContinue?</string>
+	<string name="version">Version</string>
+	<string name="version_is">Version is</string>
+	<string name="please_wait">Please Wait...</string>
+	<string name="backing_up">Backing Up Project...</string>
+	<string name="registration">Registration</string>
+	<string name="confirm_registration">An email confirming registration will be sent to your gmail account</string>
+	<string name="loading">Loading Project...</string>
+	<string name="project_loaded">Project Loaded</string>
+	<string name="local_download">Local Download</string>
+	<string name="select_base_table">Select Base Table</string>
+	<string name="select_download_table">Select Table for Download</string>
+	<string name="get_data">Get Data</string>
+	<string name="confirm_delete">Confirm Delete</string>
+	<string name="confirm_media_delete">Confirm unused media files to delete</string>
+	<string name="data_download_select_error">Table must be selected for data download</string>
+	<string name="loading_data">Loading Project Data...</string>
+	<string name="synch_all_message_images">Synchronise all entries before synchronising images</string>
+	<string name="synch_all_message_videos">Synchronise all entries before synchronising videos</string>
+	<string name="synch_all_message_audio">Synchronise all entries before synchronising audio files</string>
+	<string name="wifi_unavailable">WiFi Unavaialable</string>
+	<string name="file_synch_confirm">files should only be synchronised using wi-fi due to file size.\nContinue anyway?</string>
+	<string name="synch_button_1">files should only be synchronised using wi-fi due to file size.\nContinue anyway?</string>
+	<string name="synch_button_2">files should only be synchronised using wi-fi due to file size.\nContinue anyway?</string>
+	<string name="send_data">Send Data to Remote Server(s)</string>
+	<string name="no_data_to_send">No Data to Send to Server(s)</string>
+	<string name="reset_synch">Reset Synchronised</string>
+	<string name="reset_synch_confirm">This will upload all records to server on next synchronisation.\n\nReset all synchronised data?</string>
+	<string name="uploading_videos">Uploading Videos...</string>
+	<string name="uploading_images">Uploading Images...</string>
+	<string name="uploading_audio">Uploading Audio Files...</string>
+	<string name="uploading_data">Uploading Data...</string>
+	<string name="backup_success">Project Backup Successful</string>
+	<string name="backup_failed">Project Backup Failed. Check SD Card</string>
+	<string name="project_retrieval_failed">Project retrieval failed. Is project name correct?</string>
+	<string name="project_data_retrieval_failed">Project data retrieval failed</string>
+	<string name="data_loaded">Project data successfully loaded</string>
+	<string name="load_images">Load associated images?</string>
+	<string name="too_many_entries">Returned data contains too many entries.\n\nSelect higher table</string>
+	<string name="group_data_failed">Project group data retrieval failed</string>
+	<string name="project_backup_loading_failed">Loading of backup data file failed</string>
+	<string name="data_backup_loaded">Project backup data successfully loaded</string>
+	<string name="synch_failed">Synchronisation Failed</string>
+	<string name="synch_success">Synchronisation Successful</string>
+	<string name="no_backup">No project backup file available</string>
+	<string name="loading_backup">Loading Backup File</string>
+	<string name="backup_not_present">Backup file not present, backup project first</string>
+
+	<string name="location_required">WARNING: Location not set and is a required field</string>
+	<string name="key_required_1">Value required for primary key field</string>
+	<string name="key_required_2">Entry cannot be stored</string>
+	<string name="entry_exists_1">Entry exists for this primary key</string>
+	<string name="entry_exists_2">Any changes to record cannot be undone</string>
+	<string name="value_required">WARNING: Value is required</string>
+	<string name="invalid_entry">Invalid Entry</string>
+	
+	<string name="set_date">Set Date</string>
+	<string name="set_time">Set Current Time</string>
+	<string name="pick_time">Select Time</string>
+	<string name="confirm_value">Confirm Value</string>
+	<string name="store_edit">Store Edit</string>
+	<string name="tap_to_store">Tap button to store record</string>
+	<string name="different_values">Values are different</string>
+	<string name="remote_edit_error">Primary key exists and entry cannot be edited</string>
+		
+	<string name="jump_error_1">There is an error in the XML. Entry \'jump\' for</string>
+	<string name="jump_error_2">must be an integer</string>
+	<string name="invalid_date">The date/time you provided is in an invalid format</string>
+	<string name="re_error">Entry does not match required format</string>
+	<string name="xml_error">Error in XML form definition</string>
+	<string name="number_error">Entry is not a number</string>
+	<string name="number_minimum_error">Entry is less than required minimum</string>
+	<string name="number_maximum_error">Entry is greater than required maximum</string>
+	<string name="primary_key_required">Entry required for primary key field</string>
+	<string name="gps_warning">WARNING: LOCATION NOT SET FOR</string>
+	<string name="entries_required_for">Entries required for</string>
+	<string name="tap_store_to_continue">Tap store again to continue</string>
+	<string name="no_title_set">No Title Set</string>
+	<string name="gps_replace_1">This will replace previous accuracy of</string>
+	<string name="gps_replace_2">Save Location?</string>
+	<string name="next_to_continue">Tap Next again to continue</string>
+	<string name="delete_entries">Delete Entries?</string>
+	<string name="delete_entries_confirm">This will delete all entries and all associated data for this project\n\nContinue?</string>
+	<string name="entries_deleted">All Entries Deleted</string>
+	<string name="delete_synch_entries_confirm">This will delete all synchronised entries and all associated data for this project</string>
+	<string name="synch_entries_deleted">All Synchronised Entries Deleted</string>
+	<string name="delete_remote_entries_confirm">This will delete all remote entries and all associated data for this project</string>
+	<string name="remote_entries_deleted">All Remote Entries Deleted</string>
+	<string name="delete_orphan_entries_confirm">This will delete all orphaned entries and all associated data for this project</string>
+	<string name="orphan_entries_deleted">All Orphaned Entries Deleted</string>
+	
+	<string name="email_1">EpiCollect Phone Registraion</string>
+	<string name="email_2">Register Email</string>
+	<string name="email_3">Phone ID</string>
+	<string name="email_4">Send mail...</string>
+	
+	<string name="email_5">EpiCollect Backup File</string>
+	<string name="email_6">Data backup file attached for project</string>
+	<string name="email_7">Phone ID</string>
+	
+	<string name="no_data_to_search">No data entered to search</string>
+	<string name="no_matches">No matching records found in the database</string>	
+	<string name="entry_saved">Entry Saved</string>
+	<string name="success">Success</string> 
+	<string name="details">Details</string>
+	<string name="yes">Yes</string>
+	<string name="no">No</string>
+	<string name="cancel">Cancel</string>
+	<string name="warning">Warning</string>
+	<string name="next">Next</string>
+	<string name="previous">Prev</string>  <!-- Previous -->
+	<string name="store">Store</string>
+	<string name="select">Select</string>
+	<string name="ret">Return</string>
+	<string name="error">Error</string>
+	<string name="add">Add</string>
+	<string name="to">to</string>
+	<string name="confirm">Confirm</string>
+	<string name="with">with</string>
+	<string name="continue_question">Continue?</string>
+	<string name="hierarchy">Hierarchy</string>
+	<string name="ok">OK</string>
+	<string name="delete">Delete</string>
+	<string name="search">Search</string>
+	<string name="completed">Completed</string>
+	<string name="remote">Remote</string>
+	<string name="local">Local</string>
+	<string name="back">Back</string>
+		
+	<string name="select_form">Select Form</string>
+	<string name="add_another">Add Another</string>
+	<string name="return_to_main_entry">Return to Main Entry</string>
+	<string name="list_synch_entries">List/Synch Entries</string>
+	
+	<string name="app_name">EpiCollect+</string>
+
+	<!-- Epi_collect -->
+	<string name="start_resume">Start/Resume Data Collection</string>
+	<string name="synch_button_start">No Entries to Synchronise</string>
+	
+	<!-- TableSelect -->
+	<string name="add_set">Add/Set</string>
+	<string name="edit_view">Edit/View</string>
+	<string name="change">Change</string>
+	<string name="view_map">View Map</string>
+	<string name="list">List</string>
+	<string name="selected_first">must be selected first</string>
+	<string name="no_search_fields">No search fields are defined for this project</string>
+	<string name="select_remote_table_first">Remote table must be selected for data download</string>
+	<string name="select_entry_first">Entry must be selected for data download</string>
+	<string name="data_loaded_load_images">Project data successfully loaded. Load associated images?</string>
+
+	<!-- TableSelect -->
+	<string name="entries_for_record">entries for this record</string>
+	
+	<!-- Help -->
+	<string name="about">Click for Help</string>
+	<string name="this_version">This is version</string>
+	<string name="comments">For comments, bugs, queries and suggestions please visit</string>
+	
+	<!-- ListEntries -->
+	<string name="view">View</string>
+	<string name="find">Find</string>
+	<string name="home_check">Any unsaved data will be lost. Are you sure?</string>
+	
+	<!-- ListRecords -->
+	<string name="no_entries_to_synch">No Entries to Synchronise in Database</string>
+	<string name="no_local_entries">No Local Entries In Database</string>
+	<string name="record_list">Record List</string>
+	<string name="tap_to_synch">Tap to Synchronize Entries</string>
+	<string name="no_entries_available">No Entries Available</string>
+	<string name="list_for">List for</string>
+	<string name="record_search_results">Record Search Results</string>
+	
+	<!-- ListTables -->
+	<string name="all_synched">All Data Synchronised</string>
+	<string name="synchronise">Synchronise</string>
+	<string name="list_all">List All</string>
+	<string name="list_selected">List Selected</string>
+	<string name="synching_data">Synchronizing Data...</string>
+	<string name="full">Full</string>
+	
+	<!-- LocalMap -->
+	<string name="awaiting_gps">Awaiting GPS</string>
+	
+	<!-- AudioRecorder -->
+	<string name="recording">RECORDING</string>
+	<string name="playing">PLAYING</string>
+	
+	<!-- CustomVideoCamera -->
+	<string name="no_camera">Camera not available!</string>
+	
+	<!-- ImageSwitcher_epi_collect -->
+	<string name="delete_picture">Delete Picture?</string>
+	<string name="picture_deleted">Picture deleted</string>
+	<string name="no_images">No images available. Use Capture Photo menu option to take picture</string>
+	
+	<!-- ImageViewer -->
+	<string name="image_problem">Problem with image!</string>
+	
+	<!-- VideoPlayer -->
+	<string name="video_problem">Problem with video!</string>
+	
+	<!-- DBAccess -->
+	<string name="remote_upload_failed">Upload to remote server failed</string>
+	<string name="local_upload_failed">Upload to local server failed</string>
+	<string name="remote_entries_not_entered">Entries could not be entered in remote server for tables</string>
+	<string name="local_entries_not_entered">Entries could not be entered in local server for tables</string>
+	<string name="remote_image_upload_failed">Upload of images to remote server failed</string>
+	<string name="local_image_upload_failed">Upload of images to local server failed</string>
+	<string name="no_upload_images">No images to upload</string>
+	<string name="upload_of">Upload of</string>
+	<string name="upload_of_images">images successful</string>
+	<string name="no_upload_videos">No videos to upload</string>
+	<string name="remote_video_upload_failed">Upload of videos to remote server failed</string>
+	<string name="local_video_upload_failed">Upload of videos to local server failed</string>
+	<string name="upload_of_videos">videos successful</string>
+	<string name="no_upload_audio">No audio files to upload</string>
+	<string name="remote_audio_upload_failed">Upload of audio files to remote server failed</string>
+	<string name="local_audio_upload_failed">Upload of audio files to local server failed</string>
+	<string name="upload_of_audio">audio files successful</string>
+	
+	<string name="settings">Settings</string>
+	<string name="project">Project</string>
+	
+<!-- Server URLs for version 1 -->    
+    <string name="remote_xml">"http://epicollectserver.appspot.com/downloadFromServer"</string>
+    <string name="image_url">"http://epicollectserver.appspot.com/uploadImageToServer"</string>
+    <string name="synch_url">"http://epicollectserver.appspot.com/uploadToServer"</string>
+    <string name="project_url">"http://epicollectserver.appspot.com/getForm?projectName="</string>
+
+	
+</resources>

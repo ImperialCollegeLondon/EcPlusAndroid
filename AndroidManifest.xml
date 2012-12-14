@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="uk.ac.imperial.epi_collect2"
+    android:versionName="1.0" android:versionCode="1" >
+
+	<uses-sdk android:minSdkVersion="4" /> 
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+ 	<uses-permission android:name="android.permission.CAMERA"/> 
+ 	<uses-permission android:name="android.permission.RECORD_AUDIO" />
+ 	<uses-permission android:name="android.permission.READ_PHONE_STATE"/> 
+ 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+ 	<uses-permission android:name="android.permission.GET_ACCOUNTS"/> 
+ 	<uses-permission android:name="android.permission.WAKE_LOCK"/> 
+ 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/> 
+ 	
+ 	<supports-screens android:smallScreens="true" />
+    
+    <application android:icon="@drawable/epi_icon_small" 
+    	android:theme="@android:style/Theme.Black" 
+    	android:label="@string/app_name" 
+    	>
+    	
+    	<uses-library android:name="com.google.android.maps" />
+    	
+        <activity android:name=".Epi_collect"
+			android:configChanges="keyboardHidden|orientation"
+			>	
+        			
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            
+            
+        </activity>
+        <activity android:name="uk.ac.imperial.epi_collect2.media.camera.VideoPlayer"
+        	android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+        	/> 
+        <activity android:name="uk.ac.imperial.epi_collect2.media.camera.Camcorder"
+       		android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+        	/> 
+        	<activity android:name="uk.ac.imperial.epi_collect2.media.camera.ImageViewer"
+        	android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+        	/> 
+        <activity android:name="uk.ac.imperial.epi_collect2.util.barcode.Barcode_Scanner"
+        	/> 
+
+        <activity android:name=".TableSelect"
+       		android:configChanges="keyboardHidden|orientation"
+        	/> 
+        <!--  <activity android:name=".ListTables"
+        	android:configChanges="keyboardHidden|orientation"
+        	/> -->
+        <activity android:name=".Help"
+        	android:configChanges="keyboardHidden|orientation"
+        	/> 
+        <activity android:name=".util.ECSettings"
+        	android:configChanges="keyboardHidden|orientation"
+        	/> 
+        <activity android:name=".maps.LocalMap"
+        	android:configChanges="keyboardHidden|orientation"
+        	/>
+        <!-- <activity android:name=".NewEntry"
+        	android:configChanges="keyboardHidden|orientation"
+        	android:screenOrientation="portrait"
+        	/>  -->
+        <activity android:name=".ListRecords"
+        	android:configChanges="keyboardHidden|orientation"
+        	/>
+        <activity android:name=".DetailsView"
+        	android:configChanges="keyboardHidden|orientation"
+        	/>
+        <activity android:name=".EntryNote"
+           	android:configChanges="keyboardHidden|orientation"
+        	/>
+        <activity android:name=".EntryNote2"
+           	android:configChanges="keyboardHidden|orientation"
+        	/>
+        <activity android:name=".FindRecord"
+        	android:configChanges="keyboardHidden|orientation">
+        	
+        	</activity>
+        <activity android:name=".media.camera.ImageSwitcher_epi_collect"
+        	android:configChanges="keyboardHidden|orientation"
+        	/>
+        
+ 		
+    </application>
+    
+    
+</manifest> 
+
+		<!--   android:launchMode="singleTop">
+        	<intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <meta-data android:name="android.app.searchable"
+                       android:resource="@xml/searchable" /> -->

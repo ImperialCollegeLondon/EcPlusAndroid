@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+   android:layout_width="fill_parent"
+   android:layout_height="fill_parent"
+   android:scrollbars="vertical"
+	android:fillViewport="true" 
+   > 
+
+     
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    	android:orientation="vertical"
+    	android:layout_width="fill_parent"
+    	android:layout_height="wrap_content"
+    	android:background="@drawable/background"
+    	>
+    	
+       	<!-- android:layout_marginTop="5px" -->
+    <ImageView android:id="@+id/image"
+     	android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+	/>
+	
+	<!-- android:text="Start"  -->
+	<!-- android:layout_below="@id/image"
+    	android:layout_marginTop="25px"
+    	android:layout_centerHorizontal="true"  -->
+	<Button android:id="@+id/newbut" 
+		android:layout_width="fill_parent" 
+    	android:layout_height="wrap_content"     	
+    />
+   
+   <!-- FOR SCORE -->     
+   <!-- <Button android:id="@+id/remotebut" 
+		android:layout_width="fill_parent" 
+   		android:layout_height="wrap_content" 
+    	android:layout_below="@id/newbut"
+    	android:layout_alignParentLeft="true"
+    	android:layout_centerHorizontal="true" 
+    	android:text="Add Remote Data" 
+    /> 
+    
+    <Button android:id="@+id/synchbut" 
+		android:layout_width="fill_parent" 
+   		android:layout_height="wrap_content" 
+    	android:layout_below="@id/remotebut"
+    	android:layout_alignParentLeft="true"
+    	android:layout_centerHorizontal="true" 
+    	android:text="No Entries to Synchronise" 
+    	/> -->
+    	
+    <!-- REMOVE FOR SCORE -->
+    <!--  android:layout_below="@id/newbut"
+    	android:layout_alignParentLeft="true"
+    	android:layout_centerHorizontal="true" -->
+    <Button android:id="@+id/synchbut" 
+		android:layout_width="fill_parent" 
+   		android:layout_height="wrap_content" 
+    	
+    	/>
+    	
+    <!-- android:layout_centerHorizontal="true" 
+    	android:layout_below="@+id/synchbut"  -->
+    <TextView android:id="@+id/spintext"
+    	android:layout_width="fill_parent" 
+    	android:layout_height="wrap_content" 
+    	android:gravity="center"
+		android:textStyle="bold"
+		android:textSize="15dp"
+		android:textColor="#FF000000"
+		android:background="#FFFFFFFF"
+		android:layout_marginTop="40dip"  
+		/>
+<!-- 20dip  -->
+			
+	<!-- android:layout_below="@+id/spintext" -->
+	<Spinner android:id="@+id/proj_spin"
+		android:layout_width="fill_parent" 
+    	android:layout_height="wrap_content"   	
+		android:layout_marginBottom="40dip"
+		android:gravity="center"
+		/>
+            
+    
+ <!-- 	<Button android:id="@+id/listbut" 
+		android:layout_width="fill_parent" 
+   		android:layout_height="wrap_content" 
+    	android:layout_below="@id/newbut"
+    	android:layout_alignParentLeft="true"
+    	android:layout_centerHorizontal="true" 
+    	android:text="List Entries" 
+    /> -->
+    
+ <!-- 	<Button android:id="@+id/mapbut" 
+		android:layout_width="fill_parent" 
+    	android:layout_height="wrap_content" 
+    	android:layout_below="@id/listbut"
+    	android:layout_alignParentLeft="true"
+    	android:layout_centerHorizontal="true" 
+    	android:text="Display Map" 
+    /> -->
+                
+    
+	<!-- android:layout_centerHorizontal="true" 
+    	android:layout_below="@id/proj_spin" -->
+	<TextView android:id="@+id/urltext1"
+    	android:layout_width="fill_parent" 
+    	android:layout_height="wrap_content" 
+		android:textStyle="bold"
+		android:textSize="15dp"
+		android:textColor="#FF000000"
+		android:background="#FFFFFFFF"
+		android:gravity="center_horizontal"
+		/>
+		
+		<!--  android:text="Project URL is:" -->
+		
+	<!-- android:layout_centerHorizontal="true" 
+    	android:layout_below="@id/urltext1" -->
+	<TextView android:id="@+id/urltext2"
+    	android:layout_width="fill_parent" 
+    	android:layout_height="wrap_content" 		
+		android:textStyle="bold"
+		android:textSize="15dp"
+		android:textColor="#FF000000"
+		android:background="#FFFFFFFF"
+		android:gravity="center_horizontal"
+		/>
+		<!--  android:text="http://www.epicollect.net/project.html?name=demoproject" -->
+		
+	<!-- android:layout_alignParentBottom="true"
+    	android:layout_centerHorizontal="true" 
+    	android:layout_below="@id/urltext2" -->
+	<Button android:id="@+id/helpbut" 
+		android:layout_width="fill_parent" 
+    	android:layout_height="wrap_content" 
+    	   
+	/>
+	
+	</LinearLayout>
+ </ScrollView>
+
+    
+
