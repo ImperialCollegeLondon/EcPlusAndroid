@@ -26,6 +26,7 @@ import uk.ac.imperial.epi_collect2.util.xml.ParseXML;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -38,6 +39,7 @@ import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -61,6 +63,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.ImageView;
 
+@TargetApi(Build.VERSION_CODES.ECLAIR)
 public class Epi_collect extends Activity implements Runnable{
 	
 	private static final String APK_VERSION = "1.0"; //"1.0"; // SCORE 2.2 // "2.6.16"; //
