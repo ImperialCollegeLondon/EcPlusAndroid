@@ -108,7 +108,7 @@ public class Epi_collect extends Activity implements Runnable{
     private String email = "", sIMEI = "1"; //, load_fail_url;
     public static String project_server = "";
     
-    // Test 3
+    // Test 4
     /** Called when the activity is first created. 
      * @throws FileNotFoundException */
     @Override
@@ -564,7 +564,7 @@ public class Epi_collect extends Activity implements Runnable{
     	//	parseXML = new ParseXML("http://plus.epicollect.net/derek.xml");
      	else if(newproject.equalsIgnoreCase("School")) 
     		parseXML = new ParseXML("http://plus.epicollect.net/schools2.xml");
-    	
+     	
      	else if(newproject.startsWith("SD_")|| newproject.startsWith("sd_")){
      		if(!newproject.endsWith(".xml"))
      			newproject = newproject + ".xml";
