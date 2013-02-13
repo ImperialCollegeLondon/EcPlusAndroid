@@ -105,6 +105,7 @@ public class Epi_collect extends Activity implements Runnable{
     private String email = "", sIMEI = "1"; //, load_fail_url;
     public static String project_server = "";
     
+    // Test
     /** Called when the activity is first created. 
      * @throws FileNotFoundException */
     @Override
