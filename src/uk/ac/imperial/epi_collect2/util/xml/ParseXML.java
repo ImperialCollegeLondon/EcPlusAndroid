@@ -1,5 +1,8 @@
 package uk.ac.imperial.epi_collect2.util.xml;
 
+import org.w3c.dom.CharacterData;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 //import org.xml.sax.XMLReader;
@@ -64,7 +67,7 @@ public class ParseXML{
     String button_image_url = "";
     String synch_local_url = "None";
     String local_remote_xml = "None";
-    String reg_email = "", epicollect_version = "2", project_description = "", project_version = "1.0", server = "", project_type = "full"; //, foreign_key = "";
+    String reg_email = "", epicollect_version = "2", project_description = "", project_version = "1.0", server = ""; //, project_type = "full"; //, foreign_key = "";
     //boolean usephonekey = false;
     
     // Store the information for each table. This is the information in createTable()
@@ -126,12 +129,12 @@ public class ParseXML{
     		if(url_string.startsWith("SD_")){
     			url_string = url_string.replaceFirst("SD_", "");
     			try{
-    				xml_stream = new FileInputStream(new File(Environment.getExternalStorageDirectory()+"/EpiCollect/"+url_string));
+    				xml_stream = new FileInputStream(new File(Epi_collect.appFiles+"/"+url_string));
     				//xml_file = new File(Environment.getExternalStorageDirectory()+"/EpiCollect/"+xml_file); 
     			}
     			catch(Exception e){
     				try{
-        				xml_stream = new FileInputStream(new File(Environment.getExternalStorageDirectory()+"/"+url_string));
+        				xml_stream = new FileInputStream(new File(Epi_collect.appFiles+"/"+url_string));
         				//xml_file = new File(Environment.getExternalStorageDirectory()+"/EpiCollect/"+xml_file); 
         			}
         			catch(Exception ex){
@@ -375,7 +378,7 @@ public class ParseXML{
 	
 	public StringBuffer createTable(){
 		
-		StringBuffer table = new StringBuffer("create table if not exists "+ project +" (change_synch text, remote_xml text, synch_url text, synch_local_url text, local_remote_xml text, button_image_url text, reg_email text, epicollect_version text, project_description text, project_version text, project_type)"); // image_url text, 
+		StringBuffer table = new StringBuffer("create table if not exists "+ project +" (change_synch text, remote_xml text, synch_url text, synch_local_url text, local_remote_xml text, button_image_url text, reg_email text, epicollect_version text, project_description text, project_version text, ecdescription text)"); // image_url text, 
 		
 		projecthash.put("change_synch", changesynch);
 		if(epicollect_version.equalsIgnoreCase("1")){
@@ -399,7 +402,7 @@ public class ParseXML{
 		projecthash.put("epicollect_version", epicollect_version);
 		projecthash.put("project_description", project_description);
 		projecthash.put("project_version", project_version);
-		projecthash.put("project_type", project_type);
+		//projecthash.put("project_type", project_type);
 		
 		return table;
 	} 
@@ -676,6 +679,7 @@ public class ParseXML{
 	        boolean remail = false;
 	        boolean descrip = false;
 	        boolean inbranch = false;
+	        boolean ecdescrip = false;
 	        //boolean image = false;
 	        String ref = "", req="", num="", doubl="", upper="", dat="", tim="", setdat="", settime, dcheck="", gkey="", gkey2="", title="", loc="", tot="", radimages="", jump="", jump1="", jump2="", re_check="", match="", def_val="", min="", max="", min2="", max2="", tosearch="", nodisp="", edit="", bar="", branform="", group_num="", crumb="";
 	        String thislabel = "";
@@ -685,7 +689,7 @@ public class ParseXML{
 	        public void startElement(String uri, String qName, String localName, Attributes attributes) throws SAXException {
 		    	
 	        	builder = new StringBuilder();
-
+	        
 	        //FOR OLD VERSION
 	        //if(attributes.getValue("ref") != null){
 	        if(attributes.getValue("name") != null || attributes.getValue("ref") != null){
@@ -903,6 +907,9 @@ public class ParseXML{
 	        	 //catch(Exception e){}
 	         } 
 	        
+	         if(qName.equalsIgnoreCase("ecdescription")){
+	    		  ecdescrip = true;
+	    	  }
 	          if(qName.equalsIgnoreCase("downloadFromServer")){
 	    		  download = true;
 	    	  }
@@ -1130,8 +1137,8 @@ public class ParseXML{
 	          	  if(attributes.getValue("allowDownloadEdits") != null)
 	          		  changesynch = attributes.getValue("allowDownloadEdits");
 	          	  //submission = true;
-	              if(attributes.getValue("type") != null)
-		    		  project_type = attributes.getValue("type");
+	              //if(attributes.getValue("type") != null)
+		    	//	  project_type = attributes.getValue("type");
 			          	  
 	            }
 	            
@@ -1151,7 +1158,7 @@ public class ParseXML{
 		          	  //else
 		          	  //	  server = Epi_collect.project_server; //dbAccess.getSettings("url"); 
 		          	  
-		          	 /* if(attributes.getValue("downloadFromServer") != null)
+		          	  if(attributes.getValue("downloadFromServer") != null)
 		          		  remote_xml = attributes.getValue("downloadFromServer");
 		          	  else
 		          		  remote_xml = server + "/download";
@@ -1167,7 +1174,7 @@ public class ParseXML{
 			    	  if(attributes.getValue("uploadToLocalServer") != null)
 			    		  synch_local_url = attributes.getValue("uploadToLocalServer"); 
 			    	  
-			    	  if(attributes.getValue("description") != null)
+			    	  /*  if(attributes.getValue("description") != null)
 			    		  project_description = attributes.getValue("description");
 			    	  
 			    	  if(attributes.getValue("registrationEmail") != null)
@@ -1201,6 +1208,11 @@ public class ParseXML{
 	        //  public void characters(char ch[], int start, int length) throws SAXException {
 	        public void endElement(String uri, String qName, String localName) throws SAXException {
 	        	  
+	        	if(ecdescrip){
+		    		  project_description = builder.toString(); //new String(ch, start, length);
+		    		  Log.i("EC DESCRIPTION", builder.toString());
+		    		  ecdescrip = false;
+		    	  }
 	        	  if(download){
 		    		  remote_xml = builder.toString(); //new String(ch, start, length);
 		    		  //Log.i(getClass().getSimpleName(), "XML REMOTE "+remote_xml);

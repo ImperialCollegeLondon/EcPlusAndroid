@@ -79,6 +79,7 @@ import uk.ac.imperial.epi_collect2.R;
 //import android.telephony.TelephonyManager;
 import android.accounts.Account;
 import android.accounts.AccountManager;
+//import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
@@ -100,6 +101,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 
+//@SuppressLint("NewApi")
 public class DBAccess {
     public class Row extends Object {
     	//public long rowId;
@@ -1149,10 +1151,24 @@ public class DBAccess {
     	
     	//db.execSQL("replace into "+table+" values('"+value+"', 'Y')");
     	
-    	ContentValues args = new ContentValues();
-        args.put("synch", "Y");
-        db.update(table, args, "id=" + "'"+value+"'", null);
+    	db.execSQL("replace into "+table+" (id, synch) values('"+value+"', 'Y')"); 
+    	//ContentValues args = new ContentValues();
+       // args.put("synch", "Y");
+       // db.update(table, args, "id=" + "'"+value+"'", null);
     }
+    
+    public boolean checkProject(String value){
+    	getActiveProject();
+    	
+    	Cursor c = db.rawQuery("select * from projects where project = \"" + value +"\"", null);
+    	if (c.getCount() > 0) {
+    		c.close();
+            return true;
+        }
+        c.close();
+        return false;
+    	
+    }   
     
     // For FindRecord to check if an ID is in the database
     public boolean checkValue(String table, String column, String value){
@@ -1223,6 +1239,17 @@ public class DBAccess {
     	
     }   
     
+ // For EpiCollect to count the number of media files
+    public int getMediaFileCount(String table, String column, String value){
+    	getActiveProject();
+   	
+    	Cursor c = db.rawQuery("select * from "+table +" where " + column +" = \"" + value +"\"", null);
+    	int total = c.getCount();
+    	c.close();
+        
+    	return total; 
+
+    }   
     
  // For FindRecord to check if an ID is in the database
     public boolean checkFileValue(String table, String column, String value){
@@ -1245,7 +1272,6 @@ public class DBAccess {
     	if (c.getCount() > 0) {
     		//c.moveToFirst();
     		//Log.i("checkFileValue", "select * from "+table +" where " + column +" = \"" + value +"\"");
-    		//Log.i("COUNT", ""+c.getCount()+" IT IS "+c.getString(0)+" "+c.getString(1));
     		c.close();
             return true; 
         }
@@ -1259,12 +1285,12 @@ public class DBAccess {
     	getActiveProject();
     	
     	Cursor c = db.rawQuery("select * from "+table +" where " + column +" = \"" + value +"\" and " + column2 +" = \"" + value2 +"\"", null);
-		//Log.i("checkFileValue", "select * from "+table +" where " + column +" = \"" + value +"\" and " + column2 +" = \"" + value2 +"\"");
+		Log.i("checkFileValue", "select * from "+table +" where " + column +" = \"" + value +"\" and " + column2 +" = \"" + value2 +"\"");
 		//Log.i("COUNT", ""+c.getCount());
     	if (c.getCount() > 0) {
-    		c.moveToFirst();
+    		//c.moveToFirst();
     		//Log.i("checkFileValue", "select * from "+table +" where " + column +" = \"" + value +"\"");
-    		//Log.i("COUNT", ""+c.getCount()+" "+c.getString(0)+" "+c.getString(1));
+    		Log.i("COUNT", ""+c.getCount()); //+" "+c.getString(0)); //+" "+c.getString(1));
     		c.close();
             return true; 
         }
@@ -1458,22 +1484,15 @@ public class DBAccess {
        
     }
     
-    public void createFileRow(String table, HashMap<String, String> values) {
+    public void createFileRow(String table, String value) {
     	
     	getActiveProject();
- 
-    	ContentValues initialValues = new ContentValues();
-    	//StringBuffer tempsb = new StringBuffer();
-    	for(String key : values.keySet()){
-    		initialValues.put(key, values.get(key));
-    		//tempsb.append(key+" "+values.get(key)+" -- ");
-    	}
         
         //initialValues.put("stored", "N");
-    	//Log.i("TABLE SELECT DB ", "data_"+DATABASE_PROJECT+"_"+table + " RES "+tempsb.toString());
-        db.replace(DATABASE_PROJECT+"_"+table, null, initialValues); // replace
+    	//Log.i("CREATE FILE ROW ", "insert into "+DATABASE_PROJECT+"_"+table+" (id, synch) values('"+value+"', 'N')");
+        db.execSQL("replace into "+DATABASE_PROJECT+"_"+table+" (id, synch) values('"+value+"', 'N')"); // replace
        
-    }
+    } 
     
     public String getSettings(String column){
     	
@@ -2672,9 +2691,9 @@ public class DBAccess {
        int maxBufferSize = 1*1024*1024;
        
        if(thumb)
-    	   imagedir = Environment.getExternalStorageDirectory()+"/EpiCollect/thumbs_epicollect_" + getProject(); //context.getResources().getString(context.getResources().getIdentifier(context.getPackageName()+":string/project", null, null));
+    	   imagedir = Epi_collect.appFiles+"/"+getProject()+"/thumbs"; //Environment.getExternalStorageDirectory()+"/EpiCollect/thumbs_epicollect_" + getProject(); //context.getResources().getString(context.getResources().getIdentifier(context.getPackageName()+":string/project", null, null));
        else
-    	   imagedir = Environment.getExternalStorageDirectory()+"/EpiCollect/picdir_epicollect_" + getProject(); //context.getResources().getString(context.getResources().getIdentifier(context.getPackageName()+":string/project", null, null));
+    	   imagedir = Epi_collect.appFiles+"/"+getProject()+"/images"; //Environment.getExternalStorageDirectory()+"/EpiCollect/picdir_epicollect_" + getProject(); //context.getResources().getString(context.getResources().getIdentifier(context.getPackageName()+":string/project", null, null));
            	   
        image_url = "http://epicollectserver.appspot.com/uploadImageToServer"; //getValue("image_url"); // context.getResources().getString(context.getResources().getIdentifier(this.getClass().getPackage().getName()+":string/image_url", null, null));
              
@@ -3110,10 +3129,10 @@ public class DBAccess {
 		File picfile;
 		try{
 			if(full){
-				picfile = new File(Environment.getExternalStorageDirectory()+"/EpiCollect/picdir_epicollect_" + getProject()+"/"+pic);
+				picfile = new File(Epi_collect.appFiles+"/"+getProject()+"/images/"+pic); //Environment.getExternalStorageDirectory()+"/EpiCollect/picdir_epicollect_" + getProject()+"/"+pic);
 				picfile.delete();
 			}
-        	picfile = new File(Environment.getExternalStorageDirectory()+"/EpiCollect/thumbs_epicollect_" + getProject()+"/"+pic);
+        	picfile = new File(Epi_collect.appFiles+"/"+getProject()+"/thumbs/"+pic); //Environment.getExternalStorageDirectory()+"/EpiCollect/thumbs_epicollect_" + getProject()+"/"+pic);
         	picfile.delete();
         	}
         catch(Exception e){}
@@ -3158,7 +3177,7 @@ public class DBAccess {
 		// Only need the keys from the hash
 		LinkedHashMap<String, String> keyshash = getAllKeys(1);
 		
-		String dir = Environment.getExternalStorageDirectory()+"/EpiCollect/";
+		String dir = Epi_collect.appFiles.toString(); //Environment.getExternalStorageDirectory()+"/EpiCollect/";
 		
 		//String ecid;
 		
@@ -3567,14 +3586,14 @@ public String synchroniseAll(String sIMEI, String email){
 		LinkedHashMap<String, String> keyshash = getAllKeys(1);
 		Hashtable<String, String> pkeyhash = new Hashtable<String, String>();
 		
-		String dir = Environment.getExternalStorageDirectory()+"/EpiCollect/";
+		//String dir = Epi_collect.appFiles.toString(); //Environment.getExternalStorageDirectory()+"/EpiCollect/";
 		
 		String urlString = "", local_urlString = "", data = "", localdata = "";
 		HttpURLConnection conn;
 		URL url;
 		OutputStreamWriter wr;
 		//DataInputStream inStream;
-		String retstr, responsecode, responsemessage, pkey="", message = ""; // , pkeyid
+		String retstr, responsecode, responsemessage, responsebody = "", pkey="", message = ""; // , pkeyid
 		Vector<String> orphantables = new Vector<String>(), local_orphantables = new Vector<String>();
 		boolean synchlocal = true, error = false, server_error = false, client_error = false, other_error = false, orphan_error = false, this_orphan_error = false,
 				local_server_error = false, local_client_error = false, local_other_error = false, local_orphan_error = false;
@@ -3858,7 +3877,7 @@ public String synchroniseAll(String sIMEI, String email){
 	            		
 	            			url = new URL(urlString); 
 	            			 
-	            			//Log.i("SENDING", data);
+	            			Log.i("SENDING", data);
 	            			//conn = (HttpURLConnection)url.openConnection();
 	            			               		
 	                		if (url.getProtocol().toLowerCase().equals("https")) {
@@ -3879,13 +3898,15 @@ public String synchroniseAll(String sIMEI, String email){
 	            			//inStream = new DataInputStream ( conn.getInputStream() );
 
 	            			//retstr = inStream.readLine();
-
-	            			//BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-	               			//String line;
-	               			//while ((line = rd.readLine()) != null) {
-	               			//	Log.i("FULL SERVER RESPONSE", line);  
-	               				
-	               			//}
+	            			
+	            			responsebody = "";
+	            			BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+	               			String line;
+	               			while ((line = rd.readLine()) != null) {
+	               				responsebody += line;
+	               				            				
+	               			}
+	               			Log.i("FULL SERVER RESPONSE", responsebody);  
 	               			
 	            			//inStream.close();
 	            			
@@ -3902,8 +3923,9 @@ public String synchroniseAll(String sIMEI, String email){
 	            			responsecode = ""+conn.getResponseCode();
 	            			responsemessage = ""+conn.getResponseMessage();
 	            			
-	            			if(responsecode.startsWith("4") || responsemessage.equalsIgnoreCase("Method Not Allowed")){
-	            			try{
+	            			//if(responsecode.startsWith("4") || responsemessage.equalsIgnoreCase("Method Not Allowed") || !responsemessage.equalsIgnoreCase("1")){
+	            			//	Log.i("RESPONSE MESSAGE", responsemessage);  
+	            				/*try{
 		            			// Get the response
 		            			InputStream inStream = new BufferedInputStream(conn.getErrorStream()); // Input
 
@@ -3920,12 +3942,12 @@ public String synchroniseAll(String sIMEI, String email){
 		            			}
 		            			catch(Exception e){
 		            				Log.i("CONNECTION ERROR 2", e.toString());
-		            			} 
-	            			}
+		            			} */
+	            			//}
 	            			
 	            			conn.disconnect();
 	            			
-	            			if(responsecode.startsWith("4")){
+	            			if(responsecode.startsWith("4") || !responsebody.equalsIgnoreCase("1")){
 	            				server_error = true; 
 	            				error = true;
 	            			}
@@ -4125,13 +4147,13 @@ public String synchroniseAll(String sIMEI, String email){
 		try  { 
 						
 		      BufferedInputStream origin = null; 
-		      FileOutputStream dest = new FileOutputStream(Environment.getExternalStorageDirectory()+"/EpiCollect/"+file+".zip"); 
+		      FileOutputStream dest = new FileOutputStream(Epi_collect.appFiles+"/"+file+".zip"); //Environment.getExternalStorageDirectory()+"/EpiCollect/"+file+".zip"); 
 		 
 		      ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(dest)); 
 		      	      
 		      byte data[] = new byte[BUFFER]; 
 		 
-		      FileInputStream fi = new FileInputStream(Environment.getExternalStorageDirectory()+"/EpiCollect/"+file); 
+		      FileInputStream fi = new FileInputStream(Epi_collect.appFiles+"/"+file); //Environment.getExternalStorageDirectory()+"/EpiCollect/"+file); 
 		      origin = new BufferedInputStream(fi, BUFFER); 
 		      ZipEntry entry = new ZipEntry(file); 
 		      out.putNextEntry(entry); 
@@ -4149,7 +4171,7 @@ public String synchroniseAll(String sIMEI, String email){
 	
 	public String uploadAllImages(String sIMEI, String email){
 		
-		File dir = new File(Environment.getExternalStorageDirectory()+"/EpiCollect/picdir_epicollect_" + getProject());
+		File dir = new File(Epi_collect.appFiles+"/"+getProject()+"/images"); //Environment.getExternalStorageDirectory()+"/EpiCollect/picdir_epicollect_" + getProject());
 		//File picfile;
 	    String[] chld = dir.list();
 	    String result = mCtx.getResources().getString(R.string.error)+": "; //"ERROR: ";
@@ -4221,7 +4243,7 @@ public String synchroniseAll(String sIMEI, String email){
 	
 	public String uploadAllVideos(String sIMEI, String email){
 		
-		File dir = new File(Environment.getExternalStorageDirectory()+"/EpiCollect/videodir_epicollect_" + getProject());
+		File dir = new File(Epi_collect.appFiles+"/"+getProject()+"/videos"); //Environment.getExternalStorageDirectory()+"/EpiCollect/videodir_epicollect_" + getProject());
 		//File picfile;
 	    String[] chld = dir.list();
 	    String result = mCtx.getResources().getString(R.string.error)+": "; //"ERROR: ";
@@ -4293,7 +4315,7 @@ public String synchroniseAll(String sIMEI, String email){
 	
 	public String uploadAllAudio(String sIMEI, String email){
 		
-		File dir = new File(Environment.getExternalStorageDirectory()+"/EpiCollect/audiodir_epicollect_" + getProject());
+		File dir = new File(Epi_collect.appFiles+"/"+getProject()+"/audio"); //Environment.getExternalStorageDirectory()+"/EpiCollect/audiodir_epicollect_" + getProject());
 		//File picfile;
 	    String[] chld = dir.list();
 	    String result = "ERROR: ";
@@ -4400,27 +4422,27 @@ public String synchroniseAll(String sIMEI, String email){
     	   urlString = getValue("synch_url");
        }
        if(thumb){
-    	   imagedir = Environment.getExternalStorageDirectory()+"/EpiCollect/thumbs_epicollect_" + project; //context.getResources().getString(context.getResources().getIdentifier(context.getPackageName()+":string/project", null, null));
+    	   imagedir = Epi_collect.appFiles+"/"+getProject()+"/thumbs"; //Environment.getExternalStorageDirectory()+"/EpiCollect/thumbs_epicollect_" + project; //context.getResources().getString(context.getResources().getIdentifier(context.getPackageName()+":string/project", null, null));
     	   //urlString = getValue("image_url")+"?";
     	   urlString += "?type=thumbnail";
        }
        else if(image){
-    	   imagedir = Environment.getExternalStorageDirectory()+"/EpiCollect/picdir_epicollect_" + project; //context.getResources().getString(context.getResources().getIdentifier(context.getPackageName()+":string/project", null, null));
+    	   imagedir = Epi_collect.appFiles+"/"+getProject()+"/images"; //Environment.getExternalStorageDirectory()+"/EpiCollect/picdir_epicollect_" + project; //context.getResources().getString(context.getResources().getIdentifier(context.getPackageName()+":string/project", null, null));
     	   //urlString = getValue("image_url");
     	   urlString += "?type=full_image";
        }
        else if(video){
-    	   imagedir = Environment.getExternalStorageDirectory()+"/EpiCollect/videodir_epicollect_" + project; //context.getResources().getString(context.getResources().getIdentifier(context.getPackageName()+":string/project", null, null));
+    	   imagedir = Epi_collect.appFiles+"/"+getProject()+"/videos"; //Environment.getExternalStorageDirectory()+"/EpiCollect/videodir_epicollect_" + project; //context.getResources().getString(context.getResources().getIdentifier(context.getPackageName()+":string/project", null, null));
     	   //urlString = getValue("image_url");
     	   urlString += "?type=video";
        }
        else if(audio){
-    	   imagedir = Environment.getExternalStorageDirectory()+"/EpiCollect/audiodir_epicollect_" + project; //context.getResources().getString(context.getResources().getIdentifier(context.getPackageName()+":string/project", null, null));
+    	   imagedir = Epi_collect.appFiles+"/"+getProject()+"/audio"; //Environment.getExternalStorageDirectory()+"/EpiCollect/audiodir_epicollect_" + project; //context.getResources().getString(context.getResources().getIdentifier(context.getPackageName()+":string/project", null, null));
     	   //urlString = getValue("image_url");
     	   urlString += "?type=audio";
        }
        else{
-    	   imagedir = Environment.getExternalStorageDirectory()+"/EpiCollect";
+    	   imagedir = Epi_collect.appFiles.toString(); //Environment.getExternalStorageDirectory()+"/EpiCollect";
     	   urlString += "?type=data";
        }
        
@@ -4593,6 +4615,7 @@ public String synchroniseAll(String sIMEI, String email){
        return retstr; //true;
      } 
 	
+	//@SuppressLint("NewApi")
 	public boolean backupProject(String sIMEI, boolean deleteSynch){
 		
 		//List<Row> rows;
@@ -4603,7 +4626,7 @@ public String synchroniseAll(String sIMEI, String email){
 		// Only need the keys from the hash
 		LinkedHashMap<String, String> keyshash = getAllKeys(1);
 		
-		String dir = Environment.getExternalStorageDirectory()+"/EpiCollect/";
+		String dir = Epi_collect.appFiles.toString(); //Environment.getExternalStorageDirectory()+"/EpiCollect/";
 		
 		String textfile, xmlfile;
 		
@@ -4879,7 +4902,8 @@ public String synchroniseAll(String sIMEI, String email){
     	
     	if(getimages){
     		
-    		if(loadImageFile(url_string, Environment.getExternalStorageDirectory()+"/EpiCollect/temp.zip") == 0)
+    		//if(loadImageFile(url_string, Epi_collect.appFiles+"/temp.zip") == 0)
+    		if(loadImageFile(url_string, Epi_collect.appFiles+"/"+getProject()+"/thumbs") == 0)
     			return 0;
     		// Get the image zip file and uncompress it to the thumbs directory
     	/*	final int BUFFER = 2048;
@@ -4981,7 +5005,7 @@ public String synchroniseAll(String sIMEI, String email){
    				InputStream stream = urlc.getInputStream();
     			
    				br = new BufferedReader(new InputStreamReader(stream));
-   				FileOutputStream out = new FileOutputStream(Environment.getExternalStorageDirectory()+"/EpiCollect/data_download.txt");
+   				FileOutputStream out = new FileOutputStream(Epi_collect.appFiles+"/data_download.txt");
    				try{
    					byte buf[]=new byte[1024];
    					int len;
@@ -4994,7 +5018,7 @@ public String synchroniseAll(String sIMEI, String email){
    				}
    			catch (IOException e){}
    			
-   			result = loadFile(Environment.getExternalStorageDirectory()+"/EpiCollect/data_download.txt");
+   			result = loadFile(Epi_collect.appFiles+"/data_download.txt");
    			
    		}
    		wl.release();
@@ -5029,7 +5053,7 @@ public String synchroniseAll(String sIMEI, String email){
 			        conn.setDoInput(true);
 			        conn.setRequestProperty("content-type", "binary/data");
 			        InputStream in = conn.getInputStream();
-			        FileOutputStream out = new FileOutputStream(Environment.getExternalStorageDirectory()+"/EpiCollect/temp.zip");
+			        FileOutputStream out = new FileOutputStream(Epi_collect.appFiles+"/temp.zip");
 			        byte[] b = new byte[1024];
 			        int count;
 			        while ((count = in.read(b)) >= 0) {
@@ -5059,7 +5083,7 @@ public String synchroniseAll(String sIMEI, String email){
    			BufferedOutputStream dest = null;
    	         BufferedInputStream is = null;
    	         ZipEntry zentry;
-   	         ZipFile zipfile = new ZipFile(Environment.getExternalStorageDirectory()+"/EpiCollect/temp.zip");
+   	         ZipFile zipfile = new ZipFile(Epi_collect.appFiles+"/temp.zip");
    	         Enumeration<?> e = zipfile.entries();
    	         while(e.hasMoreElements()) {
    	            zentry = (ZipEntry) e.nextElement();

@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import uk.ac.imperial.epi_collect2.Epi_collect;
+
 import android.content.Context;
 import android.hardware.Camera;
 import android.media.CamcorderProfile;
@@ -19,7 +21,7 @@ public class CamcorderView extends SurfaceView implements SurfaceHolder.Callback
 
 	MediaRecorder recorder;
 	SurfaceHolder holder;
-	String outputFile = Environment.getExternalStorageDirectory()+"/EpiCollect/temp.mp4"; ///sdcard/epicollect_temp.mp4";
+	String outputFile = Epi_collect.appFiles+"/temp.mp4"; ///sdcard/epicollect_temp.mp4";
 
 	public CamcorderView(Context context, AttributeSet attrs) {
 		super(context, attrs);

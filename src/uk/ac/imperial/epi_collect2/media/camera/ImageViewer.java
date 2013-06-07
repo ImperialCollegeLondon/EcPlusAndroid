@@ -1,5 +1,6 @@
 package uk.ac.imperial.epi_collect2.media.camera;
 
+import uk.ac.imperial.epi_collect2.Epi_collect;
 import uk.ac.imperial.epi_collect2.R;
 import uk.ac.imperial.epi_collect2.util.db.DBAccess;
 import android.app.Activity;
@@ -45,7 +46,7 @@ public class ImageViewer extends Activity {
 	         DBAccess dbAccess = new DBAccess(this);
 	  	     dbAccess.open();
 	  	     
-	         imagedir = Environment.getExternalStorageDirectory()+"/EpiCollect/thumbs_epicollect_" + dbAccess.getProject(); //this.getResources().getString(this.getResources().getIdentifier(this.getPackageName()+":string/project", null, null));
+	         imagedir = Epi_collect.appFiles+"/"+dbAccess.getProject()+"/images"; //Environment.getExternalStorageDirectory()+"/EpiCollect/thumbs_epicollect_" + dbAccess.getProject(); //this.getResources().getString(this.getResources().getIdentifier(this.getPackageName()+":string/project", null, null));
 	          
 	         Bundle extras = getIntent().getExtras();
 	         if (extras != null && extras.getString("IMAGE_ID") != null){

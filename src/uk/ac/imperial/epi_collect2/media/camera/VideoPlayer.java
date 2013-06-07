@@ -1,5 +1,6 @@
 package uk.ac.imperial.epi_collect2.media.camera;
 
+import uk.ac.imperial.epi_collect2.Epi_collect;
 import uk.ac.imperial.epi_collect2.R;
 import uk.ac.imperial.epi_collect2.util.db.DBAccess;
 import android.app.Activity;
@@ -50,7 +51,7 @@ public class VideoPlayer extends Activity {
 	         DBAccess dbAccess = new DBAccess(this);
 	  	     dbAccess.open();
 	  	     
-	         videodir = Environment.getExternalStorageDirectory()+"/EpiCollect/videodir_epicollect_" + dbAccess.getProject(); //this.getResources().getString(this.getResources().getIdentifier(this.getPackageName()+":string/project", null, null));
+	         videodir = Epi_collect.appFiles+"/"+dbAccess.getProject()+"/videos"; //Environment.getExternalStorageDirectory()+"/EpiCollect/videodir_epicollect_" + dbAccess.getProject(); //this.getResources().getString(this.getResources().getIdentifier(this.getPackageName()+":string/project", null, null));
 	          
 	         Bundle extras = getIntent().getExtras();
 	         if (extras != null && extras.getString("VIDEO_ID") != null){

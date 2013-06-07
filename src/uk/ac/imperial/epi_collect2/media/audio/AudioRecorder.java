@@ -4,18 +4,21 @@ import java.io.File;
 import java.io.IOException;
 
 import uk.ac.imperial.epi_collect2.EntryNote;
-import uk.ac.imperial.epi_collect2.EntryNote2;
+//import uk.ac.imperial.epi_collect2.EntryNote2;
 import uk.ac.imperial.epi_collect2.R;
 
 
+import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
+import android.os.Build;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+	@SuppressLint("NewApi")
 	public class AudioRecorder {
 
 		  MediaRecorder recorder;// = new MediaRecorder(); 
@@ -25,7 +28,7 @@ import android.widget.TextView;
 		  String oldtext;
 		  TextView tview;
 		  EntryNote calling_enote;
-		  EntryNote2 calling_enote2;
+		  //EntryNote2 calling_enote2;
 		  
 		  public AudioRecorder() {			  
 			  
@@ -46,9 +49,25 @@ import android.widget.TextView;
 			  stopButton = sbutton;
 			  
 			  recorder = new MediaRecorder();
+			  //recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+			  //recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4); //THREE_GPP);
+			  //recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+			  //recorder.setAudioEncodingBitRate(16);
+			  //recorder.setAudioSamplingRate(44100);
+			  
 			  recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-			  recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-			  recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+			  if (Build.VERSION.SDK_INT >= 10) {
+			      recorder.setAudioSamplingRate(44100);
+			      recorder.setAudioEncodingBitRate(96000);
+			      recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+			      recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+			  } else {
+			      // older version of Android, use crappy sounding voice codec
+			      recorder.setAudioSamplingRate(8000);
+			      recorder.setAudioEncodingBitRate(12200);
+			      recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+			      recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+			  }
 			  			  
 			  recorder.setOutputFile(path);
 			  recorder.prepare();
@@ -115,7 +134,7 @@ import android.widget.TextView;
 			  recorder.start();*/
 			  }
 		  
-		  public void play(EntryNote2 en, String path, TextView tv, ImageButton pbutton, ImageButton rbutton, ImageButton sbutton) throws IOException {
+		 /* public void play(EntryNote2 en, String path, TextView tv, ImageButton pbutton, ImageButton rbutton, ImageButton sbutton) throws IOException {
 
 			  calling_enote2 = en;
 			  tview = tv;
@@ -158,7 +177,7 @@ import android.widget.TextView;
 			  stopButton.setEnabled(true);
 			  tv.setTextColor(Color.BLUE);
 			  tv.setText(R.string.playing); //"PLAYING");
-			  }
+			  } */
 		  
 		  /**
 		   * Stops a recording that has been previously started.

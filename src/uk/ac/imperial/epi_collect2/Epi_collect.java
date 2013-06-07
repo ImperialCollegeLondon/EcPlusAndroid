@@ -10,6 +10,7 @@ import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Vector;
 
 import javax.net.ssl.HostnameVerifier;
@@ -27,6 +28,10 @@ import uk.ac.imperial.epi_collect2.util.xml.ParseXML;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.annotation.TargetApi;
+//import android.annotation.SuppressLint;
+//import android.annotation.TargetApi;
+//import android.annotation.SuppressLint;
+//import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -36,6 +41,7 @@ import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -52,17 +58,25 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.ImageView;
 
+//@TargetApi(Build.VERSION_CODES.ECLAIR)
+//@SuppressLint("NewApi")
+//@SuppressLint("NewApi")
 @TargetApi(Build.VERSION_CODES.ECLAIR)
 public class Epi_collect extends Activity implements Runnable{
 	
@@ -99,16 +113,17 @@ public class Epi_collect extends Activity implements Runnable{
     private String selected_project = "", selected_table, input_project = ""; 
     private TextView urlview1, urlview2;
     private CheckBox remotecb, deleimagescb, deletevideocb, deleteaudiocb; 
-    private Button synchButton; //, remoteButton;
+    private Button synchButton, picbut, audbut, vidbut;; //, remoteButton;
     private int synch_type = 0;
     private Thread thread;
-    private boolean getimages, is_v1 = false;
+    private boolean getimages, is_v1 = false, allsynched = true, mediasynched = true;;
     private  int dataresult = 0;
     private HashMap<String, StringBuffer> tableshash;
     private String email = "", sIMEI = "1"; //, load_fail_url;
     public static String project_server = "";
+    public static File appFiles;
     
-    // Test 4
+    // Test 3
     /** Called when the activity is first created. 
      * @throws FileNotFoundException */
     @Override
@@ -117,10 +132,14 @@ public class Epi_collect extends Activity implements Runnable{
         super.setTitle("EpiCollect+"); 
         setContentView(R.layout.main);
         
+        String packageName = this.getPackageName();
+        File externalPath = Environment.getExternalStorageDirectory();
+        appFiles = new File(externalPath.getAbsolutePath() + "/Android/data/" + packageName);
+        
         try{
-        	File f = new File(Environment.getExternalStorageDirectory()+"/EpiCollect");
-        	if(!f.exists())
-        		f.mkdir();
+        	//File f = new File(Environment.getExternalStorageDirectory()+"/EpiCollect");
+        	if(!appFiles.exists())
+        		appFiles.mkdir();
         	}
         catch(Exception e){
         	showAlert(this.getResources().getString(R.string.error), this.getResources().getString(R.string.card_error)); //"Error", "SD card not present. Required for photo, video and audio capture");
@@ -289,7 +308,10 @@ public class Epi_collect extends Activity implements Runnable{
         synchButton.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View arg0) {
-            	synchroniseData(false, false, false);
+            	if(!allsynched)
+            		synchroniseData(false, false, false);
+            	else
+            		synchroniseMedia();
             }
            
         });
@@ -302,6 +324,14 @@ public class Epi_collect extends Activity implements Runnable{
            
         });
         
+        final Intent intent = getIntent();
+        final String action = intent.getAction();
+
+        if (Intent.ACTION_VIEW.equals(action)) {
+            String url = intent.getDataString();
+            getProject(url);
+            }
+                
     }
     
     
@@ -336,16 +366,20 @@ public class Epi_collect extends Activity implements Runnable{
 	    		menu.add(0, BACKUP_PROJECT, 0, R.string.backup_project);
 	    		menu.add(0, EMAIL_BACKUP, 0, R.string.email_backup);
 	    		menu.add(0, LOAD_BACKUP, 0, R.string.load_backup);
-
+	    		
+	    		//int total = 0;
 	    		if(dbAccess.getValue("epicollect_version").equalsIgnoreCase("2")){
 	    			if(dbAccess.haveGroup(selected_project))
 	    				menu.add(0, GROUP_DATA_ID, 0, R.string.menu_group_data);
-	    			if(dbAccess.checkFileValue(selected_project+"_Image", "synch", "N"))
-	    				menu.add(0, SYNCH_IMAGES_ID, 0, R.string.menu_photo_synch);
-	    			if(dbAccess.checkFileValue(selected_project+"_Video", "synch", "N"))
-	    				menu.add(0, SYNCH_VIDEOS_ID, 0, R.string.menu_video_synch);
-	    			if(dbAccess.checkFileValue(selected_project+"_Audio", "synch", "N"))
-	    				menu.add(0, SYNCH_AUDIO_ID, 0, R.string.menu_audio_synch);
+	    			/*total = dbAccess.getMediaFileCount(selected_project+"_Image", "synch", "N");
+	    			if(total > 0)
+	    				menu.add(0, SYNCH_IMAGES_ID, 0, this.getResources().getString(R.string.menu_photo_synch) + " - " + total);
+	    			total = dbAccess.getMediaFileCount(selected_project+"_Video", "synch", "N");
+	    			if(total > 0)
+	    				menu.add(0, SYNCH_VIDEOS_ID, 0, this.getResources().getString(R.string.menu_video_synch) + " - " + total);
+	    			total = dbAccess.getMediaFileCount(selected_project+"_Audio", "synch", "N");
+	    			if(total > 0)
+	    				menu.add(0, SYNCH_AUDIO_ID, 0, this.getResources().getString(R.string.menu_audio_synch) + " - " + total); */
 	    			//menu.add(0, REGISTER_ID, 0, R.string.menu_register);
 	    		}	
 	    		
@@ -365,7 +399,7 @@ public class Epi_collect extends Activity implements Runnable{
 	    		File dir;
 	    		String[] chld;
 	    		try{
-	    		dir = new File(Environment.getExternalStorageDirectory()+"/EpiCollect/picdir_epicollect_" + selected_project);
+	    		dir = new File(appFiles+"/"+selected_project+"/images");
 	    		// Have to check if directory exists as they are only created when a media file is first created  
 	    		if(dir.exists()){
 	    			chld = dir.list();
@@ -373,21 +407,21 @@ public class Epi_collect extends Activity implements Runnable{
 	    				havemedia = true;
 	    			}
 	    	    
-	    		dir = new File(Environment.getExternalStorageDirectory()+"/EpiCollect/thumbs_epicollect_" + selected_project);
+	    		dir = new File(appFiles+"/"+selected_project+"/thumbs");
 	    		if(dir.exists()){
 	    			chld = dir.list();
 	    			if(chld != null && chld.length > 0)
 	    				havemedia = true;
 	    		}
 	    		
-	    		dir = new File(Environment.getExternalStorageDirectory()+"/EpiCollect/videodir_epicollect_" + selected_project);
+	    		dir = new File(appFiles+"/"+selected_project+"/videos");
 	    		if(dir.exists()){
 	    			chld = dir.list();
 	    			if(chld != null && chld.length > 0)
 	    				havemedia = true;
 	    		}
 	    		
-	    		dir = new File(Environment.getExternalStorageDirectory()+"/EpiCollect/audiodir_epicollect_" + selected_project);
+	    		dir = new File(appFiles+"/"+selected_project+"/audio");
 	    		if(dir.exists()){
 	    			chld = dir.list();
 	    			if(chld != null && chld.length > 0)
@@ -484,7 +518,7 @@ public class Epi_collect extends Activity implements Runnable{
 		case GROUP_DATA_ID:
 			getGroupDataFile();
     		break;
-		case SYNCH_IMAGES_ID:
+		/*case SYNCH_IMAGES_ID:
     		synchImages();
     		break;
 		case SYNCH_VIDEOS_ID:
@@ -492,7 +526,7 @@ public class Epi_collect extends Activity implements Runnable{
     		break;
 		case SYNCH_AUDIO_ID:
     		synchAudio();
-    		break;
+    		break;*/
 		case DEL_MEDIA_ID:
     		deleteMediaFiles();
     		break;
@@ -542,8 +576,10 @@ public class Epi_collect extends Activity implements Runnable{
     		return;
     	}
     	
-    	if(newproject.startsWith("Moz") || newproject.startsWith("moz")) 
+    	/*if(newproject.startsWith("Moz") || newproject.startsWith("moz")) 
     		parseXML = new ParseXML("http://web.bioinformatics.ic.ac.uk/score/moz_y2/xml/Moz_Y2.xml"); //"http://plus.epicollect.net/Mozambique_Y2.xml");
+    	else if(newproject.equalsIgnoreCase("Tanzania")) 
+    		parseXML = new ParseXML("http://plus.epicollect.net/Tanzania.xml");
     	else if(newproject.startsWith("Tanz") || newproject.startsWith("tanz")) 
     		parseXML = new ParseXML("http://web.bioinformatics.ic.ac.uk/score/tanz_y2/xml/TANZ_Y2.xml");
     	else if(newproject.startsWith("Vid3") || newproject.startsWith("vid3")) 
@@ -564,8 +600,10 @@ public class Epi_collect extends Activity implements Runnable{
     	//	parseXML = new ParseXML("http://plus.epicollect.net/derek.xml");
      	else if(newproject.equalsIgnoreCase("School")) 
     		parseXML = new ParseXML("http://plus.epicollect.net/schools2.xml");
-     	
-     	else if(newproject.startsWith("SD_")|| newproject.startsWith("sd_")){
+    	
+     	else */
+    	
+    	if(newproject.startsWith("SD_")|| newproject.startsWith("sd_")){
      		if(!newproject.endsWith(".xml"))
      			newproject = newproject + ".xml";
     		parseXML = new ParseXML(newproject);   
@@ -605,7 +643,7 @@ public class Epi_collect extends Activity implements Runnable{
     
     public void createEntry() {
     	
-    	if(checkProject() && dbAccess.getValue("project_type").equalsIgnoreCase("lite")){
+    	/*if(checkProject() && dbAccess.getValue("project_type").equalsIgnoreCase("lite")){
     		Intent i = new Intent(this, EntryNote2.class);
     		
     		i.putExtra("table", dbAccess.getTableByNum(1));
@@ -622,9 +660,9 @@ public class Epi_collect extends Activity implements Runnable{
     		i.putExtra("select_table", "Null");
     		    		
     		startActivity(i);
-    	}
+    	}*/
     	
-    	else if(checkProject()){
+    	if(checkProject()){ 
     	   	Intent i = new Intent(this, TableSelect.class); //NewEntry
     	   	startActivityForResult(i, ACTIVITY_NEW);
     	}
@@ -704,9 +742,13 @@ public class Epi_collect extends Activity implements Runnable{
     	LinkedHashMap<String, HashMap<String, String>> tablekeyhash = parseXML.getTablekeyhash();
     	HashMap<String, HashMap<String, String>> tablerowshash = parseXML.getRows();
     	tableshash = parseXML.getIndividualTables();
-    	
-    	
+    	    	
     	String project = parseXML.getProject();
+    	if(dbAccess.checkProject(project)){
+    		myProgressDialog.dismiss();
+    		showAlert(this.getResources().getString(R.string.error), this.getResources().getString(R.string.project_exists)); //"Registration", "An email confirming registration will be sent to your gmail account");
+    		return;
+    	}
   	    dbAccess.setActiveProject(project);
   	    dbAccess.dropTable(project);
   	    
@@ -761,7 +803,14 @@ public class Epi_collect extends Activity implements Runnable{
   	    		rkey = "Null";
   	    	dbAccess.createDataTable(project, key, rkey, branch_caller, branch_caller_key); 
   	    	
-  	    	
+  	    	File project_dir = new File(Epi_collect.appFiles+"/"+project);
+  	    	try{
+  	        	if(!project_dir.exists())
+  	        		project_dir.mkdir();
+  	        	}
+  	        catch(Exception e){
+  	        	showAlert(this.getResources().getString(R.string.error), "Cannot Create Project Directory"); //"Error", "SD card not present. Required for photo, video and audio capture");
+  	        }
 
 	    }
 
@@ -784,7 +833,7 @@ public class Epi_collect extends Activity implements Runnable{
 	  	 proj_spin.setAdapter(aspnLocs); 
 	  	 proj_spin.setSelection(1);
 	  	 
-	  	String radioimg_dir = Environment.getExternalStorageDirectory()+"/EpiCollect/radioimgdir_epicollect_" + project;
+	  /*	String radioimg_dir = Environment.getExternalStorageDirectory()+"/EpiCollect/radioimgdir_epicollect_" + project;
 	    	
 	    	// Get radiobutton images
 	    	Log.i("RadioBut Dir",dbAccess.getValue("button_image_url")+" "+radioimg_dir);
@@ -793,7 +842,7 @@ public class Epi_collect extends Activity implements Runnable{
 		    	//if(!f.exists()){
 		    	//	f.mkdir();
 		    	//}
-	    		dbAccess.loadImageFile(dbAccess.getValue("button_image_url"), radioimg_dir);
+	    		dbAccess.loadImageFile(dbAccess.getValue("button_image_url"), radioimg_dir); */
 	    	//}
 	    	
 	  	 // Projects such as Mali are slow to build so ensure message is only shown when 
@@ -856,14 +905,15 @@ public class Epi_collect extends Activity implements Runnable{
         //String radiodir;
         
         Vector<String> dirvec = new Vector<String>();
-        if(dbAccess.getValue("button_image_url").length() > 0)
-        	dirvec.addElement(Environment.getExternalStorageDirectory()+"/EpiCollect/radioimgdir_epicollect_" + selected_project); 
+        //if(dbAccess.getValue("button_image_url").length() > 0)
+        //	dirvec.addElement(Environment.getExternalStorageDirectory()+"/EpiCollect/radioimgdir_epicollect_" + selected_project); 
                 
-        dirvec.addElement(Environment.getExternalStorageDirectory()+"/EpiCollect/thumbs_epicollect_" + selected_project);
-        dirvec.addElement(Environment.getExternalStorageDirectory()+"/EpiCollect/picdir_epicollect_" + selected_project);
-        dirvec.addElement(Environment.getExternalStorageDirectory()+"/EpiCollect/videodir_epicollect_" + selected_project);
-        dirvec.addElement(Environment.getExternalStorageDirectory()+"/EpiCollect/audiodir_epicollect_" + selected_project);
-        dirvec.addElement(Environment.getExternalStorageDirectory()+"/EpiCollect/radioimgdir_epicollect_" + selected_project);
+        dirvec.addElement(appFiles+"/"+selected_project+"/thumbs");
+        dirvec.addElement(appFiles+"/"+selected_project+"/images");
+        dirvec.addElement(appFiles+"/"+selected_project+"/videos");
+        dirvec.addElement(appFiles+"/"+selected_project+"/audio");
+        if(dbAccess.getValue("button_image_url").length() > 0)
+        	dirvec.addElement(appFiles+"/"+selected_project+"/radioimg");
         
         File dir;
         for(String s : dirvec){
@@ -873,6 +923,9 @@ public class Epi_collect extends Activity implements Runnable{
             	}
             catch(Exception e){}
         }
+        
+        if(dbAccess.getValue("button_image_url").length() > 0)
+        	dbAccess.loadImageFile(dbAccess.getValue("button_image_url"), appFiles+"/"+selected_project+"/radioimg");
        /* try{
         	dir = new File(thumbdir);
         	deleteDirectory(dir);
@@ -1091,13 +1144,13 @@ public class Epi_collect extends Activity implements Runnable{
 	    String[] chld, chld2;
 	    boolean thumb = false, image = false;
 	    try{
-	    	dir = new File(Environment.getExternalStorageDirectory()+"/EpiCollect/picdir_epicollect_" + selected_project);
+	    	dir = new File(appFiles+"/"+selected_project+"/images");
 	    	if(dir.exists()){
 	    		chld = dir.list();
 	    		if(chld != null && chld.length > 0)
 	    			image = true;
 	    	}
-	    	dir2 = new File(Environment.getExternalStorageDirectory()+"/EpiCollect/thumbs_epicollect_" + selected_project);
+	    	dir2 = new File(appFiles+"/"+selected_project+"/thumbs");
 	    	if(dir.exists()){
 	    		chld2 = dir2.list();
 	    		if(chld2 != null && chld2.length > 0)
@@ -1108,7 +1161,7 @@ public class Epi_collect extends Activity implements Runnable{
  	   			ll2.addView(deleimagescb);
 	    	}
 	  
-	    	dir = new File(Environment.getExternalStorageDirectory()+"/EpiCollect/videodir_epicollect_" + selected_project);
+	    	dir = new File(appFiles+"/"+selected_project+"/videos");
 	    	if(dir.exists()){
 	    		chld = dir.list();
 	    		if(chld != null && chld.length > 0){
@@ -1116,7 +1169,7 @@ public class Epi_collect extends Activity implements Runnable{
 	    			ll2.addView(deletevideocb);
 	    		}
 	    	}
-	    	dir = new File(Environment.getExternalStorageDirectory()+"/EpiCollect/audiodir_epicollect_" + selected_project);
+	    	dir = new File(appFiles+"/"+selected_project+"/audio");
 	    	if(dir.exists()){
 	    		chld = dir.list();
 	    		if(chld != null && chld.length > 0){
@@ -1148,7 +1201,7 @@ public class Epi_collect extends Activity implements Runnable{
       
     private void deleteFiles(){
     	  	
-    	String sd_dir = Environment.getExternalStorageDirectory()+"/EpiCollect";
+    	//String sd_dir = Environment.getExternalStorageDirectory()+"/EpiCollect";
     	Vector<String> files;
     	File filetodelete;
     	File dir;
@@ -1156,7 +1209,7 @@ public class Epi_collect extends Activity implements Runnable{
     	if(deleimagescb.isChecked()){
     		files = dbAccess.getFiles(selected_project+"_Image");
     		try{
-    		dir = new File(sd_dir+"/thumbs_epicollect_" + selected_project);
+    		dir = new File(appFiles+"/"+selected_project+"/thimbs");
     		// Not necessary to keep checking if directory exists but just being extra careful!
     		if(dir.exists()){
     			chld = dir.list();
@@ -1164,7 +1217,7 @@ public class Epi_collect extends Activity implements Runnable{
     				for(int i = 0; i < chld.length; i++){
     					if(!files.contains(chld[i])){
     						
-    							filetodelete = new File(sd_dir+"/thumbs_epicollect_" + selected_project+"/"+chld[i]);
+    							filetodelete = new File(appFiles+"/"+selected_project+"/thumbs/"+chld[i]);
     							filetodelete.delete();
     						}
     						
@@ -1175,14 +1228,14 @@ public class Epi_collect extends Activity implements Runnable{
     		catch(Exception e){}
     		
     		try{
-    		dir = new File(sd_dir+"/picdir_epicollect_" + selected_project);
+    		dir = new File(appFiles+"/"+selected_project+"/images");
     		if(dir.exists()){
     			chld = dir.list();
     			if(chld != null && chld.length > 0){
     				for(int i = 0; i < chld.length; i++){
     					if(!files.contains(chld[i])){
     						
-    							filetodelete = new File(sd_dir+"/picdir_epicollect_" + selected_project+"/"+chld[i]);
+    							filetodelete = new File(appFiles+"/"+selected_project+"/images/"+chld[i]);
     							filetodelete.delete();
     						}
     						
@@ -1196,13 +1249,13 @@ public class Epi_collect extends Activity implements Runnable{
     	if(deletevideocb.isChecked()){
     	    files = dbAccess.getFiles(selected_project+"_Video");
     	    try{
-    		dir = new File(sd_dir+"/videodir_epicollect_" + selected_project);
+    		dir = new File(appFiles+"/"+selected_project+"/videos");
     		if(dir.exists()){
     			chld = dir.list();
     			if(chld != null && chld.length > 0){
     				for(int i = 0; i < chld.length; i++){
     					if(!files.contains(chld[i])){
-   							filetodelete = new File(sd_dir+"/videodir_epicollect_" + selected_project+"/"+chld[i]);
+   							filetodelete = new File(appFiles+"/"+selected_project+"/videos/"+chld[i]);
     						filetodelete.delete();
     					}
     				}
@@ -1215,13 +1268,13 @@ public class Epi_collect extends Activity implements Runnable{
     	if(deleteaudiocb.isChecked()){
     	    files = dbAccess.getFiles(selected_project+"_Audio");
     	    try{
-    		dir = new File(sd_dir+"/audiodir_epicollect_" + selected_project);
+    		dir = new File(appFiles+"/"+selected_project+"/audio");
     		if(dir.exists()){
     			chld = dir.list();
     			if(chld != null && chld.length > 0){
     				for(int i = 0; i < chld.length; i++){
     					if(!files.contains(chld[i])){
-    						filetodelete = new File(sd_dir+"/audiodir_epicollect_" + selected_project+"/"+chld[i]);
+    						filetodelete = new File(appFiles+"/"+selected_project+"/audio/"+chld[i]);
     						filetodelete.delete();
     						}
     					}
@@ -1291,7 +1344,7 @@ public class Epi_collect extends Activity implements Runnable{
 
     }
 
-    private void synchImages(){
+  /*  private void synchImages(){
     	
     	try{
     		selected_project = proj_spin.getSelectedItem().toString();
@@ -1360,7 +1413,7 @@ public class Epi_collect extends Activity implements Runnable{
     	}
     	else
     		showAlert(this.getResources().getString(R.string.error), this.getResources().getString(R.string.synch_all_message_audio)); //"Error", "Synchronise all entries before synchronising audio files");
-	}
+	} */
 
 
     private void checkWiFiConnection(final String type){ // boolean
@@ -1407,21 +1460,32 @@ public class Epi_collect extends Activity implements Runnable{
     
     private void setSynchButton(){
     	
-    	boolean allsynched = true;
+    	allsynched = true;
+    	mediasynched = true;
+    	selected_project = proj_spin.getSelectedItem().toString();
     	try{
     		allsynched= dbAccess.checkSynchronised();
+    		if(dbAccess.checkFileValue(selected_project+"_Image", "synch", "N") || 
+    				dbAccess.checkFileValue(selected_project+"_Video", "synch", "N") ||
+    				dbAccess.checkFileValue(selected_project+"_Audio", "synch", "N"))
+    			mediasynched = false;
     	}
     	catch(Exception e){
+    		Log.i("SYNCH EXCEPTION", e.toString());
     		// If project has failed to load properly from the xml this may fail and prevents EpiCollect from loading
     		
     	}
     	
-    	if(allsynched){
+    	if(allsynched && mediasynched){
         	synchButton.setText(R.string.no_data_to_send); //"No Data to Send to Server(s)");
         	synchButton.setEnabled(false);
         }
-        else{
+    	else if(!allsynched){
         	synchButton.setText(R.string.send_data); //"Send Data to Remote Server(s)"); 
+        	synchButton.setEnabled(true);
+        }
+        else{
+        	synchButton.setText(R.string.synch_media_button); //"Send Data to Remote Server(s)"); 
         	synchButton.setEnabled(true);
         }
     	
@@ -1490,6 +1554,99 @@ public class Epi_collect extends Activity implements Runnable{
 
     }
     
+    private void synchroniseMedia(){
+    	
+    	// In case this is called after media have been synched. Prevents screens appearing when all synched
+   	 	//setSynchButton();
+   	 	//if(mediasynched)
+    	//	return;
+    	if(dbAccess.checkFileValue(selected_project+"_Image", "synch", "Y") &&
+				dbAccess.checkFileValue(selected_project+"_Video", "synch", "Y") &&
+				dbAccess.checkFileValue(selected_project+"_Audio", "synch", "Y"))
+    		return;
+    	
+   		AlertDialog.Builder alert = new AlertDialog.Builder(this);  
+        	
+       	alert.setTitle(R.string.synch_media_files);  // Hierarchy
+       	
+       	dbAccess = new DBAccess(this);
+	    dbAccess.open();
+	  	
+	    boolean havemedia = false;
+    	final RadioGroup rg = new RadioGroup(this);
+	  	
+	    picbut = new Button(this);
+	    
+	    LinearLayout rgl = new LinearLayout(this);
+   	
+    	int total = dbAccess.getMediaFileCount(selected_project+"_Image", "synch", "N");
+    	if(total > 0){
+    		RadioButton rbi = new RadioButton(this);
+    		rbi.setTag("Full Size Images");
+   	 		rbi.setText(this.getResources().getString(R.string.menu_photo_synch)+" - "+total); //+" - "+total); //"Synch Images");	
+  	   	 	//rbi.setChecked(true);
+   	 		rg.addView(rbi);
+   	 		havemedia = true;
+    	}
+    	
+    	total = dbAccess.getMediaFileCount(selected_project+"_Video", "synch", "N");
+    	
+    	if(total > 0){
+    		
+    		RadioButton rbv = new RadioButton(this);
+    		rbv.setTag("Video");
+   	 		rbv.setText(this.getResources().getString(R.string.menu_video_synch)+" - "+total); //+" - "+total); //"Synch Images");
+   	 		//if(!havemedia)
+   	 		//	rbv.setChecked(true);
+   	 		rg.addView(rbv);
+   	 		havemedia = true;
+    	}
+  	 	
+   	 	total = dbAccess.getMediaFileCount(selected_project+"_Audio", "synch", "N");
+   	 	if(total > 0){
+   	 		RadioButton rba = new RadioButton(this);
+   	 		rba.setTag("Audio");
+   	 		rba.setText(this.getResources().getString(R.string.menu_audio_synch)+" - "+total); //+" - "+total); //"Synch Images");
+   	 		//if(!havemedia)
+   	 		//	rba.setChecked(true);
+   	 		rg.addView(rba);
+   	 		havemedia = true;
+   	 	}	
+   	 
+   	 	rgl.addView(rg); 
+       	     	
+   	 	if(havemedia == true){
+   	 		alert.setPositiveButton("Send Data", new DialogInterface.OnClickListener() { // R.string.ok  
+   	 			public void onClick(DialogInterface dialog, int whichButton) {
+   	 				try{
+   	 					int selected = rg.getCheckedRadioButtonId();
+   	 					RadioButton b = (RadioButton) rg.findViewById(selected);
+   	 					checkWiFiConnection(b.getTag().toString());	
+   	 				}
+   	 				catch(NullPointerException npe){ // In case no buttons are selected
+   	 					
+   	 				}
+   	 				return;
+       		
+   	 			}
+   	 		});
+   	 	}
+       	
+       	alert.setNegativeButton(R.string.close, new DialogInterface.OnClickListener() { // R.string.ok  
+           	public void onClick(DialogInterface dialog, int whichButton) {
+           		//setSynchButton();
+           	    return;		  
+           		
+           	  }
+           	  });  
+		
+		alert.setView(rgl);
+       	    
+       	alert.show();    
+   	}
+    
+   
+
     public void run() {
     	 	  
     	if(synch_type == 8){
@@ -1607,7 +1764,7 @@ public class Epi_collect extends Activity implements Runnable{
 		 dataresult = 0;
 		Looper.prepare();
         try{
-       	dataresult = dbAccess.loadFile(Environment.getExternalStorageDirectory()+"/EpiCollect/"+selected_project+"_"+sIMEI+"_data_backup.txt"); 
+        	dataresult = dbAccess.loadFile(appFiles+"/"+selected_project+"/"+sIMEI+"_data_backup.txt"); 
         	
         } catch (Exception e) {
         	Log.i(getClass().getSimpleName(), "ERROR: "+ e);
@@ -1655,11 +1812,25 @@ public class Epi_collect extends Activity implements Runnable{
          
          if(synchresult.equalsIgnoreCase(this.getResources().getString(R.string.synch_success))){ //synchresult.startsWith("ERROR:")){ 
         	 showAlert(this.getResources().getString(R.string.synch_success), synchresult); // "Success"
-   	
+        	    	
         }
          else if(synchresult.startsWith("Success")){
         	 synchresult = synchresult.replaceFirst("Success ", "");
-        	 showAlert(this.getResources().getString(R.string.synch_success), synchresult);
+       	 	 ////synchroniseMedia();
+       	 	 //mHandler.post(new Runnable() {
+         	//	public void run() {
+         	//		setSynchButton();
+         	//	}
+       	 	// });
+       	 	//if(!mediasynched)
+ 				synchroniseMedia();
+ 				mHandler.post(new Runnable() {
+ 		         	public void run() {
+ 		         		setSynchButton();
+ 		       		}
+ 		  	 	});
+        	 showAlert(this.getResources().getString(R.string.synch_success), synchresult); //, synch_type);
+        	         	 
          }
 		else{
 			showAlert(this.getResources().getString(R.string.error), synchresult); // "Error"
@@ -1682,6 +1853,7 @@ public class Epi_collect extends Activity implements Runnable{
          Looper.loop();
          Looper.myLooper().quit(); 
          
+        
           
     }
 
@@ -1712,6 +1884,23 @@ public class Epi_collect extends Activity implements Runnable{
         }).show();	
     }
     
+   /* public void showAlert(String title, String result, int type){
+    	new AlertDialog.Builder(this)
+        .setTitle(title)
+        .setMessage(result)
+        .setNegativeButton(R.string.ok, new DialogInterface.OnClickListener() { // "OK"
+
+             public void onClick(DialogInterface dialog, int whichButton) {
+            	 if(synch_type == 1)
+            		 setImageSynchButton();
+            	 else if(synch_type == 2)
+            		 setVideoSynchButton();
+            	 else if(synch_type == 3)
+            		 setAudioSynchButton();
+             }
+        }).show();	
+    } */
+        
     public void showImageAlert(String title, String result){
     	new AlertDialog.Builder(this)
         .setTitle(title)
@@ -1776,7 +1965,7 @@ public class Epi_collect extends Activity implements Runnable{
     
     private void loadBackup(){
     	try{
-        	File f = new File(Environment.getExternalStorageDirectory()+"/EpiCollect/"+selected_project+"_"+sIMEI+"_data_backup.txt");
+        	File f = new File(appFiles+"/"+selected_project+"/"+sIMEI+"_data_backup.txt");
         	if(!f.exists())
         		showAlert(this.getResources().getString(R.string.error), this.getResources().getString(R.string.no_backup)); //"Error", "No project backup file available");
         		else{
@@ -1812,7 +2001,7 @@ public class Epi_collect extends Activity implements Runnable{
     	}
     	
     	try{
-        	File f = new File(Environment.getExternalStorageDirectory()+"/EpiCollect/"+selected_project+"_"+sIMEI+"_data_backup.xml.zip");
+        	File f = new File(appFiles+"/"+selected_project+"/"+sIMEI+"_data_backup.xml.zip");
         	if(!f.exists()){
         		showAlert(this.getResources().getString(R.string.error), this.getResources().getString(R.string.backup_not_present)); //"Error", "Backup file not present, backup project first");
         		return;
@@ -1834,7 +2023,7 @@ public class Epi_collect extends Activity implements Runnable{
     		  emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, this.getResources().getString(R.string.email_5)+" - "+selected_project);
     		  emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, this.getResources().getString(R.string.email_6)+" - "+selected_project+"\n\n"+this.getResources().getString(R.string.email_3)+": "+mTelephonyMgr.getDeviceId());
     		  try{
-	            	File f = new File(Environment.getExternalStorageDirectory()+"/EpiCollect/"+selected_project+"_"+sIMEI+"_data_backup.xml.zip");
+	            	File f = new File(appFiles+"/"+selected_project+"/picdir"+sIMEI+"_data_backup.xml.zip");
 	            	if(f.exists())
 	            		emailIntent.putExtra(android.content.Intent.EXTRA_STREAM, Uri.fromFile(f));
 	            	}
@@ -2015,4 +2204,57 @@ public class Epi_collect extends Activity implements Runnable{
             }
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.i("LIFECYCLE", "onPause");
+        dbAccess.close();
+        dbAccess = null;
+    }
+    
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.i("LIFECYCLE", "onResume");
+        if (dbAccess == null) {
+        	dbAccess = new DBAccess(this);
+        	dbAccess.open();
+        }
+        
+        // When web launch is used if EpiCollect is exited and restarted the project doesn't show unless it is closed completely
+        // and restarted
+        // This ensures it shows on the spinner
+        String[] allprojects = dbAccess.getProjects();
+    	
+        ArrayList<String> temparray = new ArrayList<String>();
+        for (int i = 0; i < allprojects.length; i++) {
+        	temparray.add(allprojects[i]);
+	    	}
+
+        ArrayAdapter<String> aspnLocs = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, temparray);
+    	aspnLocs.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+    	proj_spin.setAdapter(aspnLocs); 
+    	
+    	if(allprojects.length > 1){
+  			try{
+  				proj_spin.setSelection(1);
+  			}
+  			catch(IndexOutOfBoundsException e){}
+  	    }
+
+    }
+    
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.i("LIFECYCLE", "onStart");
+    }
+    
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.i("LIFECYCLE", "onDestroy");
+    }
+    
+    
 }

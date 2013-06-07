@@ -28,6 +28,15 @@
 			android:configChanges="keyboardHidden|orientation"
 			>	
         			
+        <intent-filter>
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.BROWSABLE" />
+            <data android:scheme="http"
+                  android:host="web.bioinformatics.ic.ac.uk"
+                  android:pathPrefix="/android_beta/" />
+        </intent-filter>
+        
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

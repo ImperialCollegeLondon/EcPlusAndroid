@@ -30,6 +30,7 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import uk.ac.imperial.epi_collect2.Epi_collect;
 import uk.ac.imperial.epi_collect2.R;
 import uk.ac.imperial.epi_collect2.util.db.DBAccess;
 
@@ -99,10 +100,10 @@ public void onCreate(Bundle icicle) {
     dbAccess = new DBAccess(this); 
     dbAccess.open();
     
-    thumbdir = Environment.getExternalStorageDirectory()+"/EpiCollect/thumbs_epicollect_" + dbAccess.getProject(); //this.getResources().getString(this.getResources().getIdentifier(this.getPackageName()+":string/project", null, null));
-    picdir = Environment.getExternalStorageDirectory()+"/EpiCollect/picdir_epicollect_" + dbAccess.getProject(); //this.getResources().getString(this.getResources().getIdentifier(this.getPackageName()+":string/project", null, null));
+    thumbdir = Epi_collect.appFiles+"/"+dbAccess.getProject()+"/thumbs"; //Environment.getExternalStorageDirectory()+"/EpiCollect/thumbs_epicollect_" + dbAccess.getProject(); //this.getResources().getString(this.getResources().getIdentifier(this.getPackageName()+":string/project", null, null));
+    picdir = Epi_collect.appFiles+"/"+dbAccess.getProject()+"/images"; //Environment.getExternalStorageDirectory()+"/EpiCollect/picdir_epicollect_" + dbAccess.getProject(); //this.getResources().getString(this.getResources().getIdentifier(this.getPackageName()+":string/project", null, null));
     
-    //Log.i("ImageSwitcher THUMBS", thumbdir);
+    Log.i("ImageSwitcher THUMBS", thumbdir);
     
     try{
        	File f = new File(thumbdir);
@@ -114,7 +115,7 @@ public void onCreate(Bundle icicle) {
     		f.mkdir();
     	}
     catch(Exception e){
-    	//Log.i("ImageSwitcher THUMBS ERROR", thumbdir);
+    	Log.i("ImageSwitcher THUMBS ERROR", thumbdir+" "+e.toString());
     	havesdcard = false;
     	showAlert(this.getResources().getString(R.string.photo_card_error)); //"SD card not present. Required for photo capture");
     }
@@ -342,7 +343,7 @@ private void showToast(String text){
    				}
    				else
    					imagefile = existing_photoid;
-   				copyFile(new File(fpath), new File(Environment.getExternalStorageDirectory(), "temp.jpg"));
+   				copyFile(new File(fpath), new File(Epi_collect.appFiles, "temp.jpg"));
    			}
    		}
    		catch(NullPointerException npe){
@@ -358,7 +359,7 @@ private void showToast(String text){
    		}
     }
 
-   	File file = new File(Environment.getExternalStorageDirectory(), "temp.jpg");
+   	File file = new File(Epi_collect.appFiles, "temp.jpg");
    	
  // If cancel on camera pressed
 	if(!file.exists()){
@@ -503,7 +504,7 @@ private void captureImage(){
 	//imagefile = pic_num-1;
 	photoid = mImageIds.length;
 
-	File file = new File(Environment.getExternalStorageDirectory(), "temp.jpg");
+	File file = new File(Epi_collect.appFiles, "temp.jpg");
 	
 	Intent imageCaptureIntent = new Intent("android.media.action.IMAGE_CAPTURE");
 	imageCaptureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));

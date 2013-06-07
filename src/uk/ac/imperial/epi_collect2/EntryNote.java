@@ -35,6 +35,11 @@ import uk.ac.imperial.epi_collect2.util.barcode.IntentIntegrator;
 import uk.ac.imperial.epi_collect2.util.barcode.IntentResult;
 import uk.ac.imperial.epi_collect2.util.db.DBAccess;
 
+import android.annotation.SuppressLint;
+//import android.annotation.SuppressLint;
+//import android.annotation.SuppressLint;
+//import android.annotation.SuppressLint;
+//import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -51,6 +56,7 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.PixelFormat;
 import android.graphics.Bitmap.CompressFormat;
+import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Criteria;
@@ -59,6 +65,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -69,6 +76,7 @@ import android.text.Html;
 import android.text.InputType;
 import android.text.format.DateFormat;
 import android.util.Log;
+import android.view.Display;
 //import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Gravity;
@@ -81,6 +89,7 @@ import android.view.ViewGroup;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
+import android.view.WindowManager;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
@@ -114,6 +123,10 @@ import android.widget.ViewFlipper;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 //import android.widget.AdapterView.OnItemClickListener;
 
+//@SuppressLint("NewApi")
+//@SuppressLint("NewApi")
+//@SuppressLint("NewApi")
+@SuppressLint("NewApi")
 public class EntryNote extends Activity implements LocationListener {
  
 	//private static final int ACTIVITY_PHOTO=1;
@@ -170,6 +183,7 @@ public class EntryNote extends Activity implements LocationListener {
 	private Vector<String> uppercase = new Vector<String>();
 	private Vector<String> doublecheck = new Vector<String>();
 	private Vector<String> nodisplay = new Vector<String>();
+	private Vector<String> radioimages = new Vector<String>();
 	private Vector<String> noteditable = new Vector<String>();
 	private Vector<String> barcodes = new Vector<String>();
 	private Vector<String> primary_keys = new Vector<String>();
@@ -286,10 +300,10 @@ public class EntryNote extends Activity implements LocationListener {
 	    Bundle extras = getIntent().getExtras();
 	    setextras = extras;
 	    
-	    thumbdir = Environment.getExternalStorageDirectory()+"/EpiCollect/thumbs_epicollect_" + project; // + this.getResources().getString(this.getResources().getIdentifier(this.getPackageName()+":string/project", null, null));
-	    picdir = Environment.getExternalStorageDirectory()+"/EpiCollect/picdir_epicollect_" + project; //this.getResources().getString(this.getResources().getIdentifier(this.getPackageName()+":string/project", null, null));
-	    videodir = Environment.getExternalStorageDirectory()+"/EpiCollect/videodir_epicollect_" + project;
-	    audiodir = Environment.getExternalStorageDirectory()+"/EpiCollect/audiodir_epicollect_" + project;
+	    thumbdir = Epi_collect.appFiles+"/"+project+"/thumbs"; // + this.getResources().getString(this.getResources().getIdentifier(this.getPackageName()+":string/project", null, null));
+	    picdir = Epi_collect.appFiles+"/"+project+"/images"; //Environment.getExternalStorageDirectory()+"/EpiCollect/picdir_epicollect_" + project; //this.getResources().getString(this.getResources().getIdentifier(this.getPackageName()+":string/project", null, null));
+	    videodir = Epi_collect.appFiles+"/"+project+"/videos"; //Environment.getExternalStorageDirectory()+"/EpiCollect/videodir_epicollect_" + project;
+	    audiodir = Epi_collect.appFiles+"/"+project+"/audio"; //Environment.getExternalStorageDirectory()+"/EpiCollect/audiodir_epicollect_" + project;
 	        
 	    if(icicle != null){
 	    	coretable = icicle.getString("table");
@@ -567,7 +581,7 @@ public class EntryNote extends Activity implements LocationListener {
 	   				}
 	   				else
 	   					imagefile = existing_photoid;
-	   				copyFile(new File(fpath), new File(Environment.getExternalStorageDirectory(), "temp.jpg"));
+	   				copyFile(new File(fpath), new File(Epi_collect.appFiles+"/"+project, "temp.jpg"));
 	   			}
 	   			createThumbnail();
 	   			updateData(extras, 1);   	
@@ -1689,6 +1703,11 @@ public class EntryNote extends Activity implements LocationListener {
         	genkey = dbAccess.getValue(table, "genkey");
         }
            
+        if(dbAccess.getValue(table, "radioimages") != null && dbAccess.getValue(table, "radioimages").length() > 0){
+        	for(String key : (dbAccess.getValue(table, "radioimages")).split(",,")){
+        		radioimages.addElement(key);
+        	}
+        }
     }
     
     
@@ -1869,6 +1888,24 @@ public class EntryNote extends Activity implements LocationListener {
 	    rlp4 = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 	    rlp5 = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 	    View v;
+	    
+	   /* int Measuredwidth = 0;
+		 // int Measuredheight = 0;
+		  Point size = new Point();
+		  WindowManager w = getWindowManager();
+
+		  	// Need to check android version to get dimension
+		    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB){
+		          w.getDefaultDisplay().getSize(size);
+
+		          Measuredwidth = size.x;
+		        //  Measuredheight = size.y; 
+		        }else{
+		          Display d = w.getDefaultDisplay(); 
+		          Measuredwidth = d.getWidth(); 
+		        //  Measuredheight = d.getHeight(); 
+		        } */
+
 	        
 	    if(lastpage >= 2){
 	    	rl2 = new RelativeLayout(this);
@@ -2948,7 +2985,7 @@ public class EntryNote extends Activity implements LocationListener {
 	    				String videoid = dbAccess.getValue(table, viewvalues[1], primary_key);
 	    				
 	    				if(videoid != null && !videoid.equalsIgnoreCase("-1") && videoid.length() > 4){
-	    					String videodir = Environment.getExternalStorageDirectory()+"/EpiCollect/videodir_epicollect_" + dbAccess.getProject();
+	    					String videodir = Epi_collect.appFiles+"/"+project+"/videos"; //Environment.getExternalStorageDirectory()+"/EpiCollect/videodir_epicollect_" + dbAccess.getProject();
 	    					try{
 	    						  File f = new File(videodir+"/"+videoid);
 	    						  if(f.exists()){
@@ -3087,7 +3124,7 @@ public class EntryNote extends Activity implements LocationListener {
 	    				String audioid = dbAccess.getValue(table, viewvalues[1], primary_key);
 	    			try{
 	    				if(audioid != null && !audioid.equalsIgnoreCase("-1") && audioid.length() > 4){
-	    					audiodir = Environment.getExternalStorageDirectory()+"/EpiCollect/audiodir_epicollect_" + dbAccess.getProject();
+	    					audiodir = Epi_collect.appFiles+"/"+project+"/audio"; //Environment.getExternalStorageDirectory()+"/EpiCollect/audiodir_epicollect_" + dbAccess.getProject();
 	    					
 	    						  File f = new File(audiodir+"/"+audioid);
 	    						  if(f.exists()){
@@ -3234,7 +3271,15 @@ public class EntryNote extends Activity implements LocationListener {
 	    			rb = new RadioButton(this);
 	    			radiohash.put(tempstring2[i], rb);
 	    			rg.addView(rb);
-	    			rb.setText(tempstring[i]);
+	    			if(radioimages.contains(viewvalues[1])){
+	    				Bitmap bitmap = BitmapFactory.decodeFile(Epi_collect.appFiles+"/"+project+"/radioimg"+"/" + tempstring2[i]+".jpg"); 
+	    				Drawable d = new BitmapDrawable(getResources(), Bitmap.createBitmap(bitmap)); //, Measuredwidth/2, Measuredwidth/2, true));
+	    				rb.setWidth(bitmap.getWidth());
+	    				rb.setBackground(d);
+	    			}
+	    			else{
+	    				rb.setText(tempstring[i]);
+	    			}
 	    			//if(sel.equals(tempstring[i]))
 	    			//	selectedrb = rb;
 	    			//Log.i("RADIO 1", tempstring[i]);
@@ -5824,9 +5869,9 @@ public class EntryNote extends Activity implements LocationListener {
 	    	
 	    // Use a hash to get these values from strings.xml
 	    	HashMap<String, String> rowhash = new HashMap<String, String>();
-	    	HashMap<String, String> imagerowhash = new HashMap<String, String>();
-	    	HashMap<String, String> videorowhash = new HashMap<String, String>();
-	    	HashMap<String, String> audiorowhash = new HashMap<String, String>();
+	    	//HashMap<String, String> imagerowhash = new HashMap<String, String>();
+	    	//HashMap<String, String> videorowhash = new HashMap<String, String>();
+	    	//HashMap<String, String> audiorowhash = new HashMap<String, String>();
 	    	Vector<String> branchtodelete = new Vector<String>();
 	    	//rowhash.put("rowId", ""+id);
 	    	//rowhash.put("remoteId", ""+remoteid);
@@ -5924,6 +5969,7 @@ public class EntryNote extends Activity implements LocationListener {
 	    	if(gpstags != null){
 	    		for(String key : gpstags){
 	    			if(jumpreversevec.contains(""+allitemposhash.get(key))){
+	    				rowhash.put("'"+key+"_lat'", "");
 	    				rowhash.put("'"+key+"_lon'", "");
 	    				rowhash.put("'"+key+"_alt'", "");
 	    				rowhash.put("'"+key+"_acc'", "");
@@ -6040,7 +6086,8 @@ public class EntryNote extends Activity implements LocationListener {
 	        		}
 	        		if(!imageviewvalhash.get(key).equalsIgnoreCase("-1")){
 	        			rowhash.put("'"+key+"'", imageviewvalhash.get(key));
-	        			imagerowhash.put("id", imageviewvalhash.get(key));
+	        			//imagerowhash.put("id", imageviewvalhash.get(key));
+	        			dbAccess.createFileRow("Image", imageviewvalhash.get(key));
 	        		}
 		        }
 	         }
@@ -6054,7 +6101,8 @@ public class EntryNote extends Activity implements LocationListener {
 		        		
 		        		if(!videoviewvalhash.get(key).equalsIgnoreCase("-1")){
 		        			rowhash.put("'"+key+"'", videoviewvalhash.get(key));
-		        			videorowhash.put("id", videoviewvalhash.get(key));
+		        			//videorowhash.put("id", videoviewvalhash.get(key));
+		        			dbAccess.createFileRow("Video", videoviewvalhash.get(key));
 		        		}
 			        }
 		         }
@@ -6067,7 +6115,8 @@ public class EntryNote extends Activity implements LocationListener {
 		        		}
 		        		if(!audioviewvalhash.get(key).equalsIgnoreCase("-1")){
 		        			rowhash.put("'"+key+"'", audioviewvalhash.get(key));
-		        			audiorowhash.put("id", audioviewvalhash.get(key));
+		        			//audiorowhash.put("id", audioviewvalhash.get(key));
+		        			dbAccess.createFileRow("Audio", audioviewvalhash.get(key));
 		        		}
 			        }
 		         }
@@ -6102,14 +6151,14 @@ public class EntryNote extends Activity implements LocationListener {
 	       		    		       	
 	    	dbAccess.createRow(coretable, rowhash);
 	    	
-	    	if(imagerowhash.keySet().size() > 0)
+	    	/*if(imagerowhash.keySet().size() > 0)
 	    		dbAccess.createFileRow("Image", imagerowhash);
 	    	if(videorowhash.keySet().size() > 0)
 	    		dbAccess.createFileRow("Video", videorowhash);
 	    	if(audiorowhash.keySet().size() > 0)
-	    		dbAccess.createFileRow("Audio", audiorowhash);
+	    		dbAccess.createFileRow("Audio", audiorowhash);*/
 	    			    	
-	    	if(imageviewvalhash != null){
+	    	/*if(imageviewvalhash != null){
 	        	for(String key : imageviewvalhash.keySet()){
 	        		rowhash.put("'"+key+"'", ""+imageviewvalhash.get(key));
 	        		imagerowhash.put("id", "'"+imageviewvalhash.get(key)+"'");
@@ -6128,7 +6177,7 @@ public class EntryNote extends Activity implements LocationListener {
 		        		rowhash.put("'"+key+"'", ""+audioviewvalhash.get(key));
 		        		audiorowhash.put("id", "'"+audioviewvalhash.get(key)+"'");
 			        }
-		         }
+		         } */
 	         
 	    	stored = true;
 	    	
@@ -6929,7 +6978,7 @@ public class EntryNote extends Activity implements LocationListener {
 	    		imagefile = photoid;
 		
 
-			File file = new File(Environment.getExternalStorageDirectory(), "temp.jpg");
+			File file = new File(Epi_collect.appFiles+"/"+project, "temp.jpg");
 		
 			Intent imageCaptureIntent = new Intent("android.media.action.IMAGE_CAPTURE");
 			imageCaptureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
@@ -6991,7 +7040,7 @@ public class EntryNote extends Activity implements LocationListener {
 		 
 		 audioactive = true;
 		 
-		 audiodir = Environment.getExternalStorageDirectory()+"/EpiCollect/audiodir_epicollect_" + dbAccess.getProject();
+		 audiodir = Epi_collect.appFiles+"/"+project+"/audio"; //Environment.getExternalStorageDirectory()+"/EpiCollect/audiodir_epicollect_" + dbAccess.getProject();
 		 
 		if(!checkAudioDirectory(audiodir))
 			 return;
@@ -7011,7 +7060,7 @@ public class EntryNote extends Activity implements LocationListener {
 	    	   	
 	    	String date = ""+cal.getTimeInMillis();
 	    	TelephonyManager mTelephonyMgr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
-	    	audioid = coretable+"_"+id+"_"+mTelephonyMgr.getDeviceId()+ "_"+date+".mp4";
+	    	audioid = coretable+"_"+id+"_"+mTelephonyMgr.getDeviceId()+ "_"+date+".3gp";
 	    	
 	    	
 		}
@@ -7036,7 +7085,7 @@ public class EntryNote extends Activity implements LocationListener {
 	 public void playAudio(){
 		 audioactive = true;
 		 
-		 audiodir = Environment.getExternalStorageDirectory()+"/EpiCollect/audiodir_epicollect_" + dbAccess.getProject();
+		 audiodir = Epi_collect.appFiles+"/"+project+"/audio"; //Environment.getExternalStorageDirectory()+"/EpiCollect/audiodir_epicollect_" + dbAccess.getProject();
 		 String audioid = audioviewvalhash.get(audioviewposhash.get(thispage));
 		 
 		try{
@@ -7286,7 +7335,10 @@ public class EntryNote extends Activity implements LocationListener {
     				showAlert(this.getResources().getString(R.string.remote_edit_error), this.getResources().getString(R.string.error));
     				return false;
     			}
-    			else{
+    			// If genkey is used for the primary key then don't print message. Value is added to form when it is created so as
+    			// soon as "next" button is pressed it is stored. If it is on second or greater page it will cause message to 
+    			// be shown as it is already in the database
+    			else if(genkey.length() == 0){
     				showCheckAlert(this.getResources().getString(R.string.entry_exists_1)+".<br>"+this.getResources().getString(R.string.entry_exists_2)); // "Entry exists for this primary key "+primary_key+".<br>Any changes to record cannot be undone"
     				secondcheck = true;
     				noerrors = false; 	
@@ -7651,8 +7703,9 @@ public class EntryNote extends Activity implements LocationListener {
     }
 
 	
+	//@SuppressLint("NewApi")
 	private void createThumbnail(){
-	   	File file = new File(Environment.getExternalStorageDirectory(), "temp.jpg");
+	   	File file = new File(Epi_collect.appFiles+"/"+project, "temp.jpg");
 	   	
 	    // If cancel on camera pressed
 	   	if(!file.exists()){

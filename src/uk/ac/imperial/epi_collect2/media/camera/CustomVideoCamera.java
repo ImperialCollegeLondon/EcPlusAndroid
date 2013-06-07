@@ -3,11 +3,14 @@ package uk.ac.imperial.epi_collect2.media.camera;
 import java.io.File;
 import java.io.IOException;
 
+import uk.ac.imperial.epi_collect2.Epi_collect;
 import uk.ac.imperial.epi_collect2.R;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.graphics.PixelFormat;
 import android.hardware.Camera;
+import android.media.CamcorderProfile;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
@@ -16,6 +19,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.widget.Toast;
 
+@SuppressLint("NewApi")
 public class CustomVideoCamera extends Activity implements SurfaceHolder.Callback{
 
 	private static final String TAG = "CAMERA_TUTORIAL";
@@ -77,9 +81,9 @@ public class CustomVideoCamera extends Activity implements SurfaceHolder.Callbac
 	}
 	
 	private MediaRecorder mediaRecorder;
-	private final int maxDurationInMs = 20000;
-	private final long maxFileSizeInBytes = 500000;
-	private final int videoFramesPerSecond = 20;
+	//private final int maxDurationInMs = 20000;
+	//private final long maxFileSizeInBytes = 500000;
+	private final int videoFramesPerSecond = 30; //20;
 
 	public boolean startRecording(){
 		try {
@@ -93,9 +97,13 @@ public class CustomVideoCamera extends Activity implements SurfaceHolder.Callbac
 
 			mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
 
-			mediaRecorder.setMaxDuration(maxDurationInMs);
+			//mediaRecorder.setMaxDuration(maxDurationInMs);
+			
+			CamcorderProfile profile = CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH);
 
-			File tempFile = new File(Environment.getExternalStorageDirectory(), "temp.mpg");
+			mediaRecorder.setProfile(profile);
+
+			File tempFile = new File(Epi_collect.appFiles, "temp.mpg");
 			mediaRecorder.setOutputFile(tempFile.getPath());
 
 			mediaRecorder.setVideoFrameRate(videoFramesPerSecond);
@@ -106,7 +114,7 @@ public class CustomVideoCamera extends Activity implements SurfaceHolder.Callbac
 
 			mediaRecorder.setPreviewDisplay(surfaceHolder.getSurface());
 
-			mediaRecorder.setMaxFileSize(maxFileSizeInBytes);
+			//mediaRecorder.setMaxFileSize(maxFileSizeInBytes);
 
             mediaRecorder.prepare();
 			mediaRecorder.start();

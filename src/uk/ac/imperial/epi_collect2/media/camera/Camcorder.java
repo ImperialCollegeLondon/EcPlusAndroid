@@ -10,6 +10,7 @@ import java.io.OutputStream;
 import java.util.Calendar;
 import java.util.TimeZone;
 
+import uk.ac.imperial.epi_collect2.Epi_collect;
 import uk.ac.imperial.epi_collect2.R;
 import uk.ac.imperial.epi_collect2.util.db.DBAccess;
 import android.app.Activity;
@@ -87,7 +88,7 @@ public class Camcorder extends Activity {
 	         dbAccess = new DBAccess(this);
 	  	     dbAccess.open();
 	  	     
-	         videodir = Environment.getExternalStorageDirectory()+"/EpiCollect/videodir_epicollect_" + dbAccess.getProject(); //this.getResources().getString(this.getResources().getIdentifier(this.getPackageName()+":string/project", null, null));
+	         videodir = Epi_collect.appFiles+"/"+dbAccess.getProject()+"/videos"; //Environment.getExternalStorageDirectory()+"/EpiCollect/videodir_epicollect_" + dbAccess.getProject(); //this.getResources().getString(this.getResources().getIdentifier(this.getPackageName()+":string/project", null, null));
 	          
 	         try{
 	            File f = new File(videodir);
@@ -233,7 +234,7 @@ public class Camcorder extends Activity {
          }
          
          private void copyFile(){ //String srFile, String dtFile){
-        	 File tempfile = new File(Environment.getExternalStorageDirectory()+"/EpiCollect/temp.mp4");   
+        	 File tempfile = new File(Epi_collect.appFiles+"/temp.mp4"); //Environment.getExternalStorageDirectory()+"/EpiCollect/temp.mp4");   
         	 try{
 
         	      InputStream in = new FileInputStream(tempfile);

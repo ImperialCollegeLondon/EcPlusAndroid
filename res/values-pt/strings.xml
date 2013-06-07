@@ -317,6 +317,14 @@
     <string name="settings">Configuração</string>
 	<string name="project">Projeto</string>
 	
+	<!-- Synch Media -->
+	<string name="synch_media_button">"Send Media Data to Remote Server(s)"</string>
+	<string name="synch_media_files">"Send Media Files"</string>
+	<string name="close">"Close"</string>
+	
+	<!-- Project Load Error -->
+	<string name="project_exists">"Project exists\nDelete before loading"</string>
+	
 	<!-- Server URLs for version 1 -->    
     <string name="remote_xml">"http://epicollectserver.appspot.com/downloadFromServer"</string>
     <string name="image_url">"http://epicollectserver.appspot.com/uploadImageToServer"</string>
