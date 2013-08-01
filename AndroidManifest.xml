@@ -33,8 +33,8 @@
             <category android:name="android.intent.category.DEFAULT" />
             <category android:name="android.intent.category.BROWSABLE" />
             <data android:scheme="http"
-                  android:host="web.bioinformatics.ic.ac.uk"
-                  android:pathPrefix="/android_beta/" />
+                  android:host="open.epicollect.net"
+                  android:pathPrefix="/" />
         </intent-filter>
         
             <intent-filter>

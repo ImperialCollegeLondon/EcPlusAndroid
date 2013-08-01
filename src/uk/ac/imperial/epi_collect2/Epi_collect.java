@@ -2,9 +2,13 @@ package uk.ac.imperial.epi_collect2;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
@@ -27,6 +31,7 @@ import uk.ac.imperial.epi_collect2.util.xml.ParseXML;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 //import android.annotation.SuppressLint;
 //import android.annotation.TargetApi;
@@ -77,7 +82,8 @@ import android.widget.ImageView;
 //@TargetApi(Build.VERSION_CODES.ECLAIR)
 //@SuppressLint("NewApi")
 //@SuppressLint("NewApi")
-@TargetApi(Build.VERSION_CODES.ECLAIR)
+//@TargetApi(Build.VERSION_CODES.ECLAIR)
+@SuppressLint("NewApi")
 public class Epi_collect extends Activity implements Runnable{
 	
 	private static final String APK_VERSION = "1.0"; //"1.0"; // SCORE 2.2 // "2.6.16"; //
@@ -103,6 +109,7 @@ public class Epi_collect extends Activity implements Runnable{
     private static final int LOAD_BACKUP = 17;
     private static final int LOAD_REMOTE = 18;
     private static final int MENU_SETTINGS = 21;
+    private static final int MENU_DB_BACKUP = 221;
     private ImageView iview;
     private DBAccess dbAccess;
     private Spinner proj_spin;
@@ -113,7 +120,7 @@ public class Epi_collect extends Activity implements Runnable{
     private String selected_project = "", selected_table, input_project = ""; 
     private TextView urlview1, urlview2;
     private CheckBox remotecb, deleimagescb, deletevideocb, deleteaudiocb; 
-    private Button synchButton, picbut, audbut, vidbut;; //, remoteButton;
+    private Button synchButton, picbut, audbut, vidbut; //, remoteButton;
     private int synch_type = 0;
     private Thread thread;
     private boolean getimages, is_v1 = false, allsynched = true, mediasynched = true;;
@@ -308,10 +315,14 @@ public class Epi_collect extends Activity implements Runnable{
         synchButton.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View arg0) {
-            	if(!allsynched)
+            	if(!allsynched){
+            		Log.i("SYNCH", "DATA");
             		synchroniseData(false, false, false);
-            	else
+            	}
+            	else{
+            		Log.i("SYNCH", "MEDIA");
             		synchroniseMedia();
+            	}
             }
            
         });
@@ -433,7 +444,9 @@ public class Epi_collect extends Activity implements Runnable{
 	    	    	menu.add(0, DEL_MEDIA_ID, 0, R.string.menu_file_del);
 	    	}
 	    
-	    menu.add(0, MENU_SETTINGS, 0, "Settings");	
+	    menu.add(0, MENU_SETTINGS, 0, R.string.settings);	
+	    
+	   // menu.add(0, MENU_DB_BACKUP, 0, "Backup DB");	
 		
 	    return super.onPrepareOptionsMenu(menu);
 
@@ -558,6 +571,16 @@ public class Epi_collect extends Activity implements Runnable{
 			Intent i = new Intent(this, ECSettings.class);
 	    	startActivity(i);
     		break;
+		case MENU_DB_BACKUP:
+			try {
+				backupDatabase();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				Log.i("DB BACKUP", e.toString());
+			}
+    		break;	
+    		
     	}
 	    return true;
 	}
@@ -803,7 +826,7 @@ public class Epi_collect extends Activity implements Runnable{
   	    		rkey = "Null";
   	    	dbAccess.createDataTable(project, key, rkey, branch_caller, branch_caller_key); 
   	    	
-  	    	File project_dir = new File(Epi_collect.appFiles+"/"+project);
+  	    	File project_dir = new File(appFiles+"/"+project);
   	    	try{
   	        	if(!project_dir.exists())
   	        		project_dir.mkdir();
@@ -1560,9 +1583,9 @@ public class Epi_collect extends Activity implements Runnable{
    	 	//setSynchButton();
    	 	//if(mediasynched)
     	//	return;
-    	if(dbAccess.checkFileValue(selected_project+"_Image", "synch", "Y") &&
-				dbAccess.checkFileValue(selected_project+"_Video", "synch", "Y") &&
-				dbAccess.checkFileValue(selected_project+"_Audio", "synch", "Y"))
+    	if(!dbAccess.checkFileValue(selected_project+"_Image", "synch", "N") &&
+				!dbAccess.checkFileValue(selected_project+"_Video", "synch", "N") &&
+				!dbAccess.checkFileValue(selected_project+"_Audio", "synch", "N"))
     		return;
     	
    		AlertDialog.Builder alert = new AlertDialog.Builder(this);  
@@ -2216,31 +2239,35 @@ public class Epi_collect extends Activity implements Runnable{
     protected void onResume() {
         super.onResume();
         Log.i("LIFECYCLE", "onResume");
-        if (dbAccess == null) {
-        	dbAccess = new DBAccess(this);
-        	dbAccess.open();
-        }
+        try{
+        	if (dbAccess == null) {
+        		dbAccess = new DBAccess(this);
+        		dbAccess.open();
+        	}
         
-        // When web launch is used if EpiCollect is exited and restarted the project doesn't show unless it is closed completely
-        // and restarted
-        // This ensures it shows on the spinner
-        String[] allprojects = dbAccess.getProjects();
+        	// When web launch is used if EpiCollect is exited and restarted the project doesn't show unless it is closed completely
+        	// and restarted
+        	// This ensures it shows on the spinner
+        	// One time it crashed, hence the try/catch - just in case
+        	String[] allprojects = dbAccess.getProjects();
     	
-        ArrayList<String> temparray = new ArrayList<String>();
-        for (int i = 0; i < allprojects.length; i++) {
-        	temparray.add(allprojects[i]);
-	    	}
-
-        ArrayAdapter<String> aspnLocs = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, temparray);
-    	aspnLocs.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-    	proj_spin.setAdapter(aspnLocs); 
+        	ArrayList<String> temparray = new ArrayList<String>();
+        	for (int i = 0; i < allprojects.length; i++) {
+        		temparray.add(allprojects[i]);
+        	}
+        	
+        	ArrayAdapter<String> aspnLocs = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, temparray);
+        	aspnLocs.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        	proj_spin.setAdapter(aspnLocs); 
     	
-    	if(allprojects.length > 1){
-  			try{
-  				proj_spin.setSelection(1);
-  			}
-  			catch(IndexOutOfBoundsException e){}
-  	    }
+        	if(allprojects.length > 1){
+        		try{
+        			proj_spin.setSelection(1);
+        		}
+        		catch(IndexOutOfBoundsException e){}
+        	}
+        }
+        catch(Exception e){}
 
     }
     
@@ -2256,5 +2283,25 @@ public class Epi_collect extends Activity implements Runnable{
         Log.i("LIFECYCLE", "onDestroy");
     }
     
+    public static void backupDatabase() throws IOException {
+        //Open your local db as the input stream
+        String inFileName = "/data/data/uk.ac.imperial.epi_collect2/databases/epi_collect";
+        File dbFile = new File(inFileName);
+        FileInputStream fis = new FileInputStream(dbFile);
+
+        String outFileName = Environment.getExternalStorageDirectory()+"/database.sqlite";
+        //Open the empty db as the output stream
+        OutputStream output = new FileOutputStream(outFileName);
+        //transfer bytes from the inputfile to the outputfile
+        byte[] buffer = new byte[1024];
+        int length;
+        while ((length = fis.read(buffer))>0){
+            output.write(buffer, 0, length);
+        }
+        //Close the streams
+        output.flush();
+        output.close();
+        fis.close();
+    }
     
 }

@@ -18,6 +18,7 @@ import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.TimeZone;
+import java.util.UUID;
 import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -218,7 +219,8 @@ public class EntryNote extends Activity implements LocationListener {
 	private Hashtable<Integer, String[]> totalshash;
 	private Vector<String> jumpreversevec = new Vector<String>();
 	private Hashtable<Integer, String> dateshashformat;
-	private static Vector<String> listfields=new Vector<String>(), listspinners=new Vector<String>(), listradios=new Vector<String>(), listcheckboxes=new Vector<String>();
+	// The lis... vectors was set as static. Not sure why but caused problem with title so removed
+	private Vector<String> listfields=new Vector<String>(), listspinners=new Vector<String>(), listradios=new Vector<String>(), listcheckboxes=new Vector<String>();
 	private Vector<String>gpstagstoskip = new Vector<String>();
 	private String[] allviews = new String[0];
 	private int lastpage = 0, thispage = 1;
@@ -281,7 +283,7 @@ public class EntryNote extends Activity implements LocationListener {
 	String project, currentkey = "";
 	//private LinkedHashMap<String, RadioButton> radiohash;
 	private int isbranch = 0;
-	private boolean resetting_radiobuttons = false, canedit = true, flipping = false;
+	private boolean resetting_radiobuttons = false, canedit = true, flipping = false, hasbranch = false;
 	private Vector <RadioGroup>radiogroup_vec = new Vector<RadioGroup>();
 
 	@Override
@@ -1131,21 +1133,26 @@ public class EntryNote extends Activity implements LocationListener {
    		Date date = new Date();
    		
    		primary_key = "";
+   		title = "";
    		phonekeyset = false;
-   		
+   		//isnew = 1;
+   		//newentry = true;
+   		//getValues(coretable);
+   		   		   		
     	//for(String key : textviews){
     	for(String key : textviewhash.keySet()){
     		if(!nodisplay.contains(key) && !setextras.containsKey(key)){
     			textviewhash.get(key).setText("");
     			if(genkey.equalsIgnoreCase(key)){
 	        		TelephonyManager mTelephonyMgr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
-	    	    	String sIMEI = mTelephonyMgr.getDeviceId();
+	    	    	//String sIMEI = mTelephonyMgr.getDeviceId();
 	    	    	
-	    	    	Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+	    	    	//Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 		       	   	
-	    	       	sIMEI += "_"+cal.getTimeInMillis();
-	    	    	textviewhash.get(key).setText(sIMEI);
-	    			et.setFocusable(false);
+	    	       	//sIMEI += "_"+cal.getTimeInMillis();
+	    	       	UUID uuid = UUID.randomUUID();
+	    	    	textviewhash.get(key).setText(uuid.toString());
+	    	    	textviewhash.get(key).setFocusable(false);
 	        	}
     			if(setdates.get(key) != null){
     				dateformat = setdates.get(key);
@@ -1172,7 +1179,7 @@ public class EntryNote extends Activity implements LocationListener {
     				gpssethash.put(key, false);
     			}
     			if(def_vals.containsKey(key)){
-		    		et.setText(def_vals.get(key));
+    				textviewhash.get(key).setText(def_vals.get(key));
 		    	} 	
     		}
         }
@@ -1351,6 +1358,26 @@ public class EntryNote extends Activity implements LocationListener {
         	textviewhash.get(key).setText(sIMEI);
         	
         }
+        
+        
+     // If a branch has been added to a previous record the primary key field would have been
+   		// made non-editable. Need to enable focus again
+   		if(hasbranch){
+   			for(Integer key: branchtvhash.keySet()){
+   				branchtvhash.get(key).setText(Html.fromHtml("<center>0 "+this.getResources().getString(R.string.entries_for_record)+"</center>"));
+   			}
+   			//for(String key: textviewhash.keySet()){
+   			//	textviewhash.get(key).setText("HELLO");
+   			//	Log.i("TEXTVIEWS", key);
+   			//}
+   			for(String key: primary_keys){
+   				//textviewhash.get(key).setEnabled(true);
+   				textviewhash.get(key).setFocusable(true);
+   				// Have to add this to otherwise EditText will not enable
+   				textviewhash.get(key).setFocusableInTouchMode(true);
+   			 				
+   			}
+   		}
         
         
     }
@@ -1756,7 +1783,7 @@ public class EntryNote extends Activity implements LocationListener {
 	    String[] tempstring, tempstring2;
 	    
 	    //Log.i(getClass().getSimpleName(), "VIEWS WAS "+views);
-	    views = views.replaceFirst(",,,", "");
+	    //views = views.replaceFirst(",,,", "");
 	    Log.i(getClass().getSimpleName(), "VIEWS NOW "+views);
 	    allviews = views.split(",,,");
 	    
@@ -1798,13 +1825,15 @@ public class EntryNote extends Activity implements LocationListener {
 	    	if(nodisplay.contains(viewvalues[1])){
 	    		if(genkey.equalsIgnoreCase(viewvalues[1])){
 	        		TelephonyManager mTelephonyMgr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
-	    	    	String sIMEI = mTelephonyMgr.getDeviceId();
+	    	    	//String sIMEI = mTelephonyMgr.getDeviceId();
 	    	    	
-	    	    	Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+	    	    	//Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 		       	   	
-	    	       	sIMEI += "_"+cal.getTimeInMillis();
+	    	       	//sIMEI += "_"+cal.getTimeInMillis();
 	    	       	et = new EditText(this);
-	    			et.setText(sIMEI);
+	    	       	
+	    	       	UUID uuid = UUID.randomUUID();
+	    			et.setText(uuid.toString());
 	    			et.setFocusable(false);
 	    			textviewhash.put(viewvalues[1], et);
 	        	}
@@ -2042,13 +2071,14 @@ public class EntryNote extends Activity implements LocationListener {
 	    		// has the old version of the code and requires a single primary key
 	    		else if(genkey.equalsIgnoreCase(viewvalues[1]) && newentry == true){
 	    			et = new EditText(this);
-	        		TelephonyManager mTelephonyMgr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
-	    	    	String sIMEI = mTelephonyMgr.getDeviceId();
+	        		//TelephonyManager mTelephonyMgr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+	    	    	//String sIMEI = mTelephonyMgr.getDeviceId();
 	    	    	
-	    	    	Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+	    	    	//Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 		       	   	
-	    	       	sIMEI += "_"+cal.getTimeInMillis();
-	    			et.setText(sIMEI);
+	    	       	//sIMEI += "_"+cal.getTimeInMillis();
+	    			UUID uuid = UUID.randomUUID();
+	    			et.setText(uuid.toString());
 	    			textviewhash.put(viewvalues[1], et);
 	        	}
 	    		else{
@@ -2179,6 +2209,7 @@ public class EntryNote extends Activity implements LocationListener {
 	    		tv.setText(label); //(Html.fromHtml(label));
 	    		//tv.setText(viewvalues[2]);
 	        	tv.setTextSize(18);
+	        	
 	        	l.addView(tv, lp);
 	        	tv.bringToFront();
 	        	/*if(viewvalues[1].equalsIgnoreCase("GPS")){
@@ -2216,13 +2247,14 @@ public class EntryNote extends Activity implements LocationListener {
 	        		} */
 	    	    	
 	    	    if(genkey.equalsIgnoreCase(viewvalues[1]) && newentry == true){
-	        		TelephonyManager mTelephonyMgr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
-	    	    	String sIMEI = mTelephonyMgr.getDeviceId();
+	        		//TelephonyManager mTelephonyMgr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+	    	    	//String sIMEI = mTelephonyMgr.getDeviceId();
 	    	    	
-	    	    	Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+	    	    	//Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 		       	   	
-	    	       	sIMEI += "_"+cal.getTimeInMillis();
-	    			et.setText(sIMEI);
+	    	       	//sIMEI += "_"+cal.getTimeInMillis();
+	    	    	UUID uuid = UUID.randomUUID();
+	    			et.setText(uuid.toString());
 	    			et.setFocusable(false);
 	        	}
 	        	
@@ -2400,8 +2432,8 @@ public class EntryNote extends Activity implements LocationListener {
 	    		//if(keytable.equalsIgnoreCase(viewvalues[1])){
 	    		if(extras.containsKey(viewvalues[1])){ // && !viewvalues[1].equalsIgnoreCase("Specimen_ID")){
 	    			et.setText(extras.getString(viewvalues[1]));
-	    			et.setFocusable(false);
-	    			//Log.i("SETTING EXTRAS 2 "+viewvalues[1], extras.getString(viewvalues[1]));
+	    			et.setFocusable(false); //Done
+	    			Log.i("SETTING EXTRAS 2 "+viewvalues[1], extras.getString(viewvalues[1]));
 	    			//keytablehash.put(viewvalues[1], extras.getString(viewvalues[1]));
 	    		}
 	    			    			
@@ -2417,11 +2449,11 @@ public class EntryNote extends Activity implements LocationListener {
 	    				//Log.i("ISNEW 0 NEWENTRY FALSE: ",  primary_key +" "+dbAccess.getValue(table, viewvalues[1], primary_key));
 	    				// If this is a stored version it cannot be edited
 	    				if(noteditable.contains(viewvalues[1]) && dbAccess.getValue(table, "ecstored", primary_key).equalsIgnoreCase("R")){ //checkRemote(table, primary_key)){
-	    	    			et.setFocusable(false);
+	    	    			et.setFocusable(false); //Done
 	    	    		}
 	    				
 	    				else if(primary_keys.contains(viewvalues[1]) || !canedit)
-	    					et.setFocusable(false);
+	    					et.setFocusable(false); //Done
 	    				
 	    				
 	    		}
@@ -2663,12 +2695,12 @@ public class EntryNote extends Activity implements LocationListener {
     			
     			//et.setFocusable(false);
     			
-    			if(genkey.equalsIgnoreCase(viewvalues[1]) && newentry == true){
+    			//if(genkey.equalsIgnoreCase(viewvalues[1]) && newentry == true){
 	    	    	
-	    	    	Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+	    	    //	Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 		       	   	
-	    			et.setText(""+cal.getTimeInMillis()); //sIMEI);
-	        	}
+	    		//	et.setText(""+cal.getTimeInMillis()); //sIMEI);
+	        	//}
 
     			if(integers.contains(viewvalues[1])){
     				et.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_SIGNED);
@@ -2779,6 +2811,7 @@ public class EntryNote extends Activity implements LocationListener {
 	    	
 	    	if(viewvalues[0].equalsIgnoreCase("branch")){
 	    		addconfirm = true;
+	    		hasbranch = true;
 	    		
 	    		tv = new TextView(this);
 	        	label = viewvalues[2]; //.replaceAll("\\\\n", "<br>");
@@ -3240,7 +3273,7 @@ public class EntryNote extends Activity implements LocationListener {
 	    		
 	    		tv = new TextView(this);
 	        	//tv.setText(viewvalues[2]);
-	        	label = viewvalues[2]; //.replaceAll("\\\\n", "<br>");
+	    		label = viewvalues[2]; //.replaceAll("\\\\n", "<br>");
 	    		tv.setText(label); //Html.fromHtml(label));
 	        	tv.setTextSize(18);
 	        	l.addView(tv, lp);
@@ -5910,9 +5943,9 @@ public class EntryNote extends Activity implements LocationListener {
 	    	}
 	       	
 	       	rowhash.put("ecphonekey", ""+phonekey);
-	    	if(dbAccess.getValue(coretable, "genkey") != null && dbAccess.getValue(coretable, "genkey").length() > 0){
-	    		title += "- "+phonekey + " "; 
-	        }
+	    	//if(dbAccess.getValue(coretable, "genkey") != null && dbAccess.getValue(coretable, "genkey").length() > 0){
+	    	//	title += "- "+phonekey + " "; 
+	        //}
  	    	
  	    	// Need to do this separately to catch "branch" if it is jumped
  	    	for(String key : allitemposhash.keySet()){
@@ -5958,6 +5991,7 @@ public class EntryNote extends Activity implements LocationListener {
 	    				if(listfields != null && listfields.contains(key) && textviewhash.get(key).getText().toString().length()>0){
 	    					//titletext = entry.replaceAll("_", " ");
 	    					title += "- "+ textviewhash.get(key).getText().toString() + " "; // textviewhash.get(key).getText().toString()
+	    					Log.i("TITLE KEY " + key, title);
 	    				}
 	    				if(primary_keys.contains(key)){
 	    					primary_key += ","+key+","+entry;
@@ -6131,13 +6165,6 @@ public class EntryNote extends Activity implements LocationListener {
 	    	ecjumped = ecjumped.replaceFirst(",", "");
 	    	rowhash.put("ecjumped", ecjumped);
 	    	
-	    	title = title.replaceFirst("- ", "");
-	    	
-	    	if(title.equalsIgnoreCase(""))
-	    		title = this.getResources().getString(R.string.no_title_set); //"No Title Set";
-
-	    	rowhash.put("ectitle", title);
-	    	    	
 	    	Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 	       	   	
 	       	String ecdate = ""+cal.getTimeInMillis();
@@ -6147,6 +6174,17 @@ public class EntryNote extends Activity implements LocationListener {
 	       	primary_key = primary_key.replaceFirst(",", "");
 	       		 	       	
 	       	rowhash.put("ecpkey", primary_key);
+	       	
+	       	title = title.replaceFirst("- ", "");
+	    	
+	    	if(title.equalsIgnoreCase("")){
+	    		//title = this.getResources().getString(R.string.no_title_set); //"No Title Set";
+	    		title = primary_key.split(",")[1];
+	    	}
+	    	//Log.i("TITLE", title);
+
+	    	rowhash.put("ectitle", title);
+	    	
 	       	rowhash.put("ecfkey", foreign_key);
 	       		    		       	
 	    	dbAccess.createRow(coretable, rowhash);
@@ -6337,11 +6375,11 @@ public class EntryNote extends Activity implements LocationListener {
 		    	// It's a branch
 		    	if(isbranch == 1) //isnew == 2)
 		    		items1.addElement(this.getResources().getString(R.string.return_to_main_entry)); //Return to Main Entry");
-		    	else
+		    	else{
 		    		items1.addElement(this.getResources().getString(R.string.list_synch_entries)); //"List/Synch Entries");
-		    	if(next != null)
-		    		items1.addElement(this.getResources().getString(R.string.add)+" "+next + " "+this.getResources().getString(R.string.to)+" "+coretable); // add to
-		   
+		    		if(next != null)
+		    			items1.addElement(this.getResources().getString(R.string.add)+" "+next + " "+this.getResources().getString(R.string.to)+" "+coretable); // add to
+		    	}
 		    	CharSequence[] items2 = new CharSequence[items1.size()];
 		   
 		    	items1.toArray(items2);
@@ -6472,7 +6510,7 @@ public class EntryNote extends Activity implements LocationListener {
 	    				}
 	    				else if(position == 1){
 	    					newEntry();
-	    					
+	    					return;
 	    				}
 	    				else if(position == 2){
 	    					listRecords();
@@ -6485,6 +6523,7 @@ public class EntryNote extends Activity implements LocationListener {
  		        		 }
 	    			}
 	    			else{
+	    				Log.i("HOME CHECK", "IS BRANCH");
 	    				// The if/else probably no longer needed here as 
 	    				// isbranch == 1 is the only option.
 	    				// The multitable option is now deleted as

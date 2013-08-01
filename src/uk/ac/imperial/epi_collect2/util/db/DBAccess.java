@@ -80,6 +80,7 @@ import uk.ac.imperial.epi_collect2.R;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 //import android.annotation.SuppressLint;
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
@@ -102,6 +103,7 @@ import android.widget.Toast;
 
 
 //@SuppressLint("NewApi")
+@SuppressLint("NewApi")
 public class DBAccess {
     public class Row extends Object {
     	//public long rowId;
@@ -4626,19 +4628,19 @@ public String synchroniseAll(String sIMEI, String email){
 		// Only need the keys from the hash
 		LinkedHashMap<String, String> keyshash = getAllKeys(1);
 		
-		String dir = Epi_collect.appFiles.toString(); //Environment.getExternalStorageDirectory()+"/EpiCollect/";
+		String dir = Epi_collect.appFiles+"/"+project+"/"; //Environment.getExternalStorageDirectory()+"/EpiCollect/";
 		
 		String textfile, xmlfile;
 		
 		if(deleteSynch){
 			Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-			textfile = dir+project+"_"+sIMEI+"_"+cal.getTimeInMillis()+"_data_backup.txt";
-			xmlfile = dir+project+"_"+sIMEI+"_"+cal.getTimeInMillis()+"_data_backup.xml";
+			textfile = dir+sIMEI+"_"+cal.getTimeInMillis()+"_data_backup.txt";
+			xmlfile = dir+sIMEI+"_"+cal.getTimeInMillis()+"_data_backup.xml";
 			}
 		else{
 			
-			textfile = dir+project+"_"+sIMEI+"_data_backup.txt";
-			xmlfile = dir+project+"_"+sIMEI+"_data_backup.xml";
+			textfile = dir+sIMEI+"_data_backup.txt";
+			xmlfile = dir+sIMEI+"_data_backup.xml";
 		}
 		
  	   	
@@ -5005,13 +5007,22 @@ public String synchroniseAll(String sIMEI, String email){
    				InputStream stream = urlc.getInputStream();
     			
    				br = new BufferedReader(new InputStreamReader(stream));
-   				FileOutputStream out = new FileOutputStream(Epi_collect.appFiles+"/data_download.txt");
+   				//FileOutputStream out = new FileOutputStream(Epi_collect.appFiles+"/data_download.txt");
+   				
+   				BufferedWriter out = new BufferedWriter(new OutputStreamWriter
+   					  (new FileOutputStream(Epi_collect.appFiles+"/data_download.txt"),"UTF-8"));
    				try{
-   					byte buf[]=new byte[1024];
-   					int len;
-   					while((len=stream.read(buf))>0)
-   						out.write(buf,0,len);
-   					out.close();
+   					int letter;
+
+   				    while ((letter = stream.read()) != -1) {
+   				      out.write((char) letter);
+   				      out.flush();
+   				    }
+   					//byte buf[]=new byte[1024];
+   					//int len;
+   					//while((len=stream.read(buf))>0)
+   					//	out.write(buf,0,len);
+   					//out.close();
    					stream.close();
    				}
    				catch (IOException e){}
@@ -5145,13 +5156,24 @@ public String synchroniseAll(String sIMEI, String email){
 				} 
     
    		  	
-				br = new BufferedReader(new FileReader(filename));		
+				//br = new BufferedReader(new FileReader(filename));
+				//br = new BufferedReader(new FileReader(new File(filename)));
+				
+				br = new BufferedReader(new InputStreamReader(new FileInputStream(filename), "UTF-8"));
+			   // BufferedReader input =  new BufferedReader(new FileReader(new File(System.getProperty("java.library.path")+"\\"+_file)));
+			    //String curline = new String(input.readLine().getBytes(),"UTF-8");
+			    				
+				//br = new BufferedReader(new InputStreamReader(new FileInputStream(filename), "UTF-8")); 
 				//int count = 0;
+				//String s;
+				//while((line = br.readLine()) != null){
 				while((line = br.readLine()) != null){
 					//count++;
 					//if(count%100 == 0)
 					//	Log.i("COUNT", ""+count);
 					
+					//line = new String(s.getBytes(),"UTF-8");
+					Log.i("LINE", line);
 					title = "";
 					primary_key = "";
 					foreign_key = "";

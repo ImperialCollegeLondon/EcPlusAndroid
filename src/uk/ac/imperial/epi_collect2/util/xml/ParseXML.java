@@ -634,7 +634,7 @@ public class ParseXML{
 			rowhash.put("'"+key+"'", checkboxvalues.get(key).toString());
 		}
 		
-		rowhash.put("notes_layout", views.toString());
+		rowhash.put("notes_layout", views.toString().replaceFirst(",,,", ""));
 		
 		rowhash.put("ecpkey", tablekey);
 		
@@ -773,8 +773,13 @@ public class ParseXML{
 	        	 }
 	        	 clearAll();
 	        	 HashMap<String, String> temptablekeyhash = new HashMap<String, String>();
-	        	 table_num++;
-	        	 temptablekeyhash.put("tablenum", ""+table_num); //attributes.getValue("num"));
+	        	 try{
+	        		 table_num = Integer.parseInt(attributes.getValue("num")); //++;
+	        	 }
+	        	 catch(NumberFormatException nfe){
+	        		 table_num++;
+	        	 }
+	        	 temptablekeyhash.put("tablenum", ""+table_num); // ""+table_num
 	        	 temptablekeyhash.put("tablename", attributes.getValue("name"));
 	        	 tablename = attributes.getValue("name");
 	        	 tablekey = attributes.getValue("key");
@@ -879,7 +884,12 @@ public class ParseXML{
 	        	 }
 	        	 clearAll();
 	        	 HashMap<String, String> temptablekeyhash = new HashMap<String, String>();
-	        	 table_num++;
+	        	 try{
+	        		 table_num = Integer.parseInt(attributes.getValue("table_num")); //++;
+	        	 }
+	        	 catch(NumberFormatException nfe){
+	        		 table_num++;
+	        	 }
 	        	 temptablekeyhash.put("tablenum", ""+table_num); //attributes.getValue("table_num"));
 	        	 temptablekeyhash.put("tablename", attributes.getValue("table_name"));
 	        	 tablename = attributes.getValue("table_name");
