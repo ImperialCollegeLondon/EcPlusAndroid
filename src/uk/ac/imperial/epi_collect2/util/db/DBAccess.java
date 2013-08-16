@@ -2267,6 +2267,9 @@ public class DBAccess {
     		
     	String result = "", photoresult = "";
     	//boolean store = true;
+    	if (sIMEI==null){
+    		sIMEI="null";
+    	}
     	
     	String synch_url = getValue("synch_url"); //context.getResources().getString(context.getResources().getIdentifier(this.getClass().getPackage().getName()+":string/synch_url", null, null));
     	//String image_url = "http://epicollectserver.appspot.com/uploadImageToServer";
@@ -3182,6 +3185,10 @@ public class DBAccess {
 		String dir = Epi_collect.appFiles.toString(); //Environment.getExternalStorageDirectory()+"/EpiCollect/";
 		
 		//String ecid;
+		// fix sIMEI if not set
+		if (sIMEI==null){
+			sIMEI="null";
+		}
 		
 		//Log.i("LOCAL", getValue("synch_local_url"));
 		boolean synchlocal = true;
@@ -3587,6 +3594,11 @@ public String synchroniseAll(String sIMEI, String email){
 		// Only need the keys from the hash
 		LinkedHashMap<String, String> keyshash = getAllKeys(1);
 		Hashtable<String, String> pkeyhash = new Hashtable<String, String>();
+		
+		//fix sIMEI for devices which don't set it
+		if (sIMEI==null) {
+			sIMEI="null";
+		}
 		
 		//String dir = Epi_collect.appFiles.toString(); //Environment.getExternalStorageDirectory()+"/EpiCollect/";
 		
@@ -4178,6 +4190,12 @@ public String synchroniseAll(String sIMEI, String email){
 	    String[] chld = dir.list();
 	    String result = mCtx.getResources().getString(R.string.error)+": "; //"ERROR: ";
 	    String project = getProject();
+	    
+	    // fix sIMEI for devices on which it is not set
+	    
+	    if (sIMEI==null ){
+	    	sIMEI="null";
+	    }
 	    boolean success = true, overallsuccess = true, loadremote = true, loadlocal = true, synchlocal = true;
 		if(getValue("synch_local_url").equalsIgnoreCase("None"))
 			synchlocal = false;
@@ -4250,6 +4268,12 @@ public String synchroniseAll(String sIMEI, String email){
 	    String[] chld = dir.list();
 	    String result = mCtx.getResources().getString(R.string.error)+": "; //"ERROR: ";
 	    String project = getProject();
+	   
+	    // fix sIMEI for devices on which it is not set
+	    
+	    if (sIMEI==null ){
+	    	sIMEI="null";
+	    }
 	    boolean success = true, overallsuccess = true, loadremote = true, loadlocal = true, synchlocal = true;
 	    if(getValue("synch_local_url").equalsIgnoreCase("None"))
 			synchlocal = false;
@@ -4322,6 +4346,12 @@ public String synchroniseAll(String sIMEI, String email){
 	    String[] chld = dir.list();
 	    String result = "ERROR: ";
 	    String project = getProject();
+	    // fix sIMEI for devices on which it is not set
+	    
+	    if (sIMEI==null ){
+	    	sIMEI="null";
+	    }
+	    
 	    boolean success = true, overallsuccess = true, loadremote = true, loadlocal = true,synchlocal = true;
 	    if(getValue("synch_local_url").equalsIgnoreCase("None"))
 			synchlocal = false;
@@ -4394,7 +4424,11 @@ public String synchroniseAll(String sIMEI, String email){
 	
 		String imagedir, urlString;
 		String project = getProject();
-		
+		 // fix sIMEI for devices on which it is not set
+	    
+	    if (sIMEI==null ){
+	    	sIMEI="null";
+	    }
 		HttpURLConnection conn = null;
 	    DataOutputStream dos = null;
 	    DataInputStream inStream = null;
@@ -4627,7 +4661,11 @@ public String synchroniseAll(String sIMEI, String email){
 		// First a list of the tables
 		// Only need the keys from the hash
 		LinkedHashMap<String, String> keyshash = getAllKeys(1);
-		
+		 // fix sIMEI for devices on which it is not set
+	    
+	    if (sIMEI==null ){
+	    	sIMEI="null";
+	    }
 		String dir = Epi_collect.appFiles+"/"+project+"/"; //Environment.getExternalStorageDirectory()+"/EpiCollect/";
 		
 		String textfile, xmlfile;
@@ -4853,7 +4891,11 @@ public String synchroniseAll(String sIMEI, String email){
 		Vector<String> positionpos = null;
 		Vector<String> primary_keys = new Vector<String>(), foreign_keys = new Vector<String>();
 		InsertHelper ih = null;
-		    		
+		    // fix sIMEI for devices on which it is not set
+	    
+	    if (sIMEI==null ){
+	    	sIMEI="null";
+	    } 		
     	URL url = null;
     		
     	String url_string;
