@@ -599,43 +599,18 @@ public class Epi_collect extends Activity implements Runnable{
     		return;
     	}
     	
-    	/*if(newproject.startsWith("Moz") || newproject.startsWith("moz")) 
-    		parseXML = new ParseXML("http://web.bioinformatics.ic.ac.uk/score/moz_y2/xml/Moz_Y2.xml"); //"http://plus.epicollect.net/Mozambique_Y2.xml");
-    	else if(newproject.equalsIgnoreCase("Tanzania")) 
-    		parseXML = new ParseXML("http://plus.epicollect.net/Tanzania.xml");
-    	else if(newproject.startsWith("Tanz") || newproject.startsWith("tanz")) 
-    		parseXML = new ParseXML("http://web.bioinformatics.ic.ac.uk/score/tanz_y2/xml/TANZ_Y2.xml");
-    	else if(newproject.startsWith("Vid3") || newproject.startsWith("vid3")) 
-    		parseXML = new ParseXML("http://web.bioinformatics.ic.ac.uk/android_beta/Vid_Test3.xml");
-    	else if(newproject.startsWith("Y2") || newproject.startsWith("y2")) 
-    		parseXML = new ParseXML("http://test.mlst.net/epicollectplus/KENYA_Y2.xml");
-    	else if(newproject.startsWith("Cohort") || newproject.startsWith("cohort")) 
-    		parseXML = new ParseXML("http://web.bioinformatics.ic.ac.uk/score/kenya_y3/xml/KENYA_Y3_COHORT.xml");
-    	else if(newproject.startsWith("Y3") || newproject.startsWith("y3")) 
-    		parseXML = new ParseXML("http://web.bioinformatics.ic.ac.uk/score/kenya_y3/xml/KENYA_Y3.xml");
-     	else if(newproject.equalsIgnoreCase("Full")) 
-    		parseXML = new ParseXML("http://web.bioinformatics.ic.ac.uk/android/Full.xml");
-     	else if(newproject.equalsIgnoreCase("UCL")) 
-    		parseXML = new ParseXML("http://web.bioinformatics.ic.ac.uk/android/UCLTest.xml"); 
-     	//else if(newproject.equalsIgnoreCase("Man")) 
-    	//	parseXML = new ParseXML("http://test.mlst.net/epicollectplusbeta/Manicaland_IVQ.xml");
-     	//else if(newproject.equalsIgnoreCase("Derek")) 
-    	//	parseXML = new ParseXML("http://plus.epicollect.net/derek.xml");
-     	else if(newproject.equalsIgnoreCase("School")) 
-    		parseXML = new ParseXML("http://plus.epicollect.net/schools2.xml");
-    	
-     	else */
-    	
+   	
     	if(newproject.startsWith("SD_")|| newproject.startsWith("sd_")){
      		if(!newproject.endsWith(".xml"))
      			newproject = newproject + ".xml";
     		parseXML = new ParseXML(newproject);   
     	}
-    	else if(newproject.startsWith("v1_")){
+    	else if(newproject.startsWith("v1_") || newproject.startsWith("V1_")){
     		is_v1 = true;
     		newproject = newproject.replaceFirst("v1_", "");
-    		if(!newproject.endsWith(".xml"))
-     			newproject = newproject + ".xml";
+    		newproject = newproject.replaceFirst("V1_", "");
+    		//if(!newproject.endsWith(".xml"))
+     		//	newproject = newproject + ".xml";
     		parseXML = new ParseXML("http://epicollectserver.appspot.com/getForm?projectName="+newproject);
     	}
     	else if(newproject.startsWith("http:") || newproject.startsWith("https:")){
