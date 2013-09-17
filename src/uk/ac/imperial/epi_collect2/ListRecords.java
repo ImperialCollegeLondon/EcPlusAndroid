@@ -13,6 +13,7 @@ import uk.ac.imperial.epi_collect2.maps.LocalMap;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
@@ -40,6 +41,7 @@ import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.graphics.Color;
 
+@SuppressLint("NewApi")
 public class ListRecords extends ListActivity implements Runnable{
 	private static final int ACTIVITY_CREATE=0;
     private static final int ACTIVITY_EDIT=1;
@@ -649,16 +651,19 @@ public class ListRecords extends ListActivity implements Runnable{
      	}
  
     	//myProgressDialog = ProgressDialog.show(this, "Please wait...", "Synchronizing Data...", true);
-     
         	   result = this.getResources().getString(R.string.synch_failed); //"Synchronisation Failed";
                 try{
-                	if(dbAccess.getValue("epicollect_version").equalsIgnoreCase("2"))
+                	if(dbAccess.getValue("epicollect_version").equalsIgnoreCase("2")){
+             			Log.i("CALLING SYNCH", "Version 2");
              			result = dbAccess.synchroniseAll(sIMEI, email);	
-             		else
-             			result = dbAccess.synchroniseV1(sIMEI, email);	
+                	}
+             		else{
+             			Log.i("CALLING SYNCH", "Version 1");
+             			result = dbAccess.synchroniseV1(sIMEI, email);
+             		}
                 	//result = dbAccess.synchroniseAll(sIMEI, email);
                 } catch (Exception e) {
-                	Log.i(getClass().getSimpleName(), "SYNCH ERROR: "+ e);
+                	Log.i(getClass().getSimpleName(), ""+ e);
                 }
                 // Dismiss the Dialog
                 myProgressDialog.dismiss();

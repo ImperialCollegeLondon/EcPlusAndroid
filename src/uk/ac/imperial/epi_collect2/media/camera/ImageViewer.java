@@ -1,5 +1,7 @@
 package uk.ac.imperial.epi_collect2.media.camera;
 
+import java.io.File;
+
 import uk.ac.imperial.epi_collect2.Epi_collect;
 import uk.ac.imperial.epi_collect2.R;
 import uk.ac.imperial.epi_collect2.util.db.DBAccess;
@@ -28,7 +30,7 @@ import android.widget.VideoView;
 public class ImageViewer extends Activity {
 
 	     private ImageView imageView; 
-	     private String imagedir;
+	     private String imagedir, thumbdir;
 	     private ImageButton endButton; // playButton, 
 	     
 	     /** Called when the activity is first created. */ 
@@ -47,11 +49,16 @@ public class ImageViewer extends Activity {
 	  	     dbAccess.open();
 	  	     
 	         imagedir = Epi_collect.appFiles+"/"+dbAccess.getProject()+"/images"; //Environment.getExternalStorageDirectory()+"/EpiCollect/thumbs_epicollect_" + dbAccess.getProject(); //this.getResources().getString(this.getResources().getIdentifier(this.getPackageName()+":string/project", null, null));
-	          
+	         thumbdir = Epi_collect.appFiles+"/"+dbAccess.getProject()+"/thumbs";
+	         
 	         Bundle extras = getIntent().getExtras();
 	         if (extras != null && extras.getString("IMAGE_ID") != null){
 	        	// Log.i("IMAGE FILE", imagedir+"/"+extras.getString("IMAGE_ID"));
-	        	 imageView.setImageURI(Uri.parse(imagedir+"/"+extras.getString("IMAGE_ID")));
+	        	 File f = new File(imagedir+"/"+extras.getString("IMAGE_ID"));
+	        	 if(f.exists()) 
+	        		 imageView.setImageURI(Uri.parse(imagedir+"/"+extras.getString("IMAGE_ID")));
+	        	 else
+	        		 imageView.setImageURI(Uri.parse(thumbdir+"/"+extras.getString("IMAGE_ID")));
 	         }
 	         else{
 	        	 showAlert(this.getResources().getString(R.string.image_problem)); //"Problem with image!");

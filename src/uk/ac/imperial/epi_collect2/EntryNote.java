@@ -213,7 +213,7 @@ public class EntryNote extends Activity implements LocationListener {
 	private CheckBox cb;
 	private DBAccess dbAccess;
 	//private boolean canupdate = true;
-	private Button confirmButton, gpsButton, photoButton, videoButton, audioButton;
+	private Button confirmButton, gpsButton, photoButton, videoButton; //, audioButton;
 	private String coretable; //, coretableview; //, coretablekey;
 	private Hashtable<Integer, EditText> doublecheckhash, doublecheckhash2, dateshash;
 	private Hashtable<Integer, String[]> totalshash;
@@ -3175,8 +3175,8 @@ public class EntryNote extends Activity implements LocationListener {
 	    			 catch(Exception e){
 					  }
 	    			if(!canedit){
-						audioButton.setEnabled(false);
-						audioButton.setTextColor(Color.WHITE);
+						recButton.setEnabled(false);
+						//recButton.setTextColor(Color.WHITE);
 	    			}
 	    		} 
 	    		
@@ -5348,18 +5348,18 @@ public class EntryNote extends Activity implements LocationListener {
 	    
 	    private boolean checkMinMax(){ //int thispage){
 		    
-	    	int val = 0, comp = 0;
+	    	float val = 0, comp = 0;
 
 	    	if(textviewposhash.containsKey(thispage)){
 	    		if(mincheck.containsKey(textviewposhash.get(thispage))){
 	    			try{
-	    				val = Integer.valueOf(mincheck.get(textviewposhash.get(thispage)));
+	    				val = Float.valueOf(mincheck.get(textviewposhash.get(thispage)));
 	    			}
 	    			catch(NumberFormatException nfe){
 	    				showAlert(this.getResources().getString(R.string.xml_error), this.getResources().getString(R.string.error)); //"Error in XML form definition", "Error");
 	    			}
 	    			try{
-	    				comp = Integer.valueOf(textviewhash.get(allitemposhashrev.get(thispage)).getText().toString());
+	    				comp = Float.valueOf(textviewhash.get(allitemposhashrev.get(thispage)).getText().toString());
 	    			}
 	    			catch(NumberFormatException nfe){
 	    				showAlert(this.getResources().getString(R.string.number_error), this.getResources().getString(R.string.error)); //"Entry is not a number", "Error");
@@ -5367,20 +5367,21 @@ public class EntryNote extends Activity implements LocationListener {
 	    			}
 	    			
 	    			if(comp < val){
-	    				showAlert(this.getResources().getString(R.string.number_minimum_error)+" - ("+val+")", this.getResources().getString(R.string.error)); //"Entry is less than required minimum", "Error");
+	    				// Don't use val as if this is an integer field don't want to show float value
+	    				showAlert(this.getResources().getString(R.string.number_minimum_error)+" - ("+mincheck.get(textviewposhash.get(thispage))+")", this.getResources().getString(R.string.error)); //"Entry is less than required minimum", "Error");
 		    			return false;
 	    			}
 	    		}
 	    		
 	    		if(maxcheck.containsKey(textviewposhash.get(thispage))){
 	    			try{
-	    				val = Integer.valueOf(maxcheck.get(textviewposhash.get(thispage)));
+	    				val = Float.valueOf(maxcheck.get(textviewposhash.get(thispage)));
 	    			}
 	    			catch(NumberFormatException nfe){
 	    				showAlert(this.getResources().getString(R.string.xml_error), this.getResources().getString(R.string.error)); //"Error in XML form definition", "Error");
 	    			}
 	    			try{
-	    				comp = Integer.valueOf(textviewhash.get(allitemposhashrev.get(thispage)).getText().toString());
+	    				comp = Float.valueOf(textviewhash.get(allitemposhashrev.get(thispage)).getText().toString());
 	    			}
 	    			catch(NumberFormatException nfe){
 	    				showAlert(this.getResources().getString(R.string.number_error), this.getResources().getString(R.string.error)); //"Entry is not a number", "Error");
@@ -5388,7 +5389,7 @@ public class EntryNote extends Activity implements LocationListener {
 	    			}
 	    			
 	    			if(comp > val){
-	    				showAlert(this.getResources().getString(R.string.number_maximum_error)+" - ("+val+")", this.getResources().getString(R.string.error)); //"Entry is greater than required maximum", "Error");
+	    				showAlert(this.getResources().getString(R.string.number_maximum_error)+" - ("+mincheck.get(textviewposhash.get(thispage))+")", this.getResources().getString(R.string.error)); //"Entry is greater than required maximum", "Error");
 		    			return false;
 	    			}
 	    		}
@@ -5425,12 +5426,12 @@ public class EntryNote extends Activity implements LocationListener {
 	    	//String query = ""; 
 	    	//String[] temp;
 	    	//boolean ismin = false;
-	    	int val = 0, comp = 0;
+	    	float val = 0, comp = 0;
     		
 	    		String key_val = "";
 	    		
 	    		try{
-					comp = Integer.valueOf(textviewhash.get(allitemposhashrev.get(thispage)).getText().toString());
+					comp = Float.valueOf(textviewhash.get(allitemposhashrev.get(thispage)).getText().toString());
 				}
 				catch(NumberFormatException nfe){
 					showAlert(this.getResources().getString(R.string.number_error), this.getResources().getString(R.string.error)); //"Entry is not a number", "Error");
@@ -5446,7 +5447,7 @@ public class EntryNote extends Activity implements LocationListener {
     				
     					if(key_val.equalsIgnoreCase(query[i+2])){
     						try{
-    		    				val = Integer.valueOf(query[i+3]);
+    		    				val = Float.valueOf(query[i+3]);
     		    			}
     		    			catch(NumberFormatException nfe){
     		    				showAlert(this.getResources().getString(R.string.xml_error), this.getResources().getString(R.string.error)); //"Error in XML form definition", "Error");
@@ -5455,14 +5456,15 @@ public class EntryNote extends Activity implements LocationListener {
     						
     						if(ismin){
     			    			if(comp < val){
-    	    						showAlert(this.getResources().getString(R.string.number_minimum_error)+" - ("+val+")", this.getResources().getString(R.string.error)); //"Entry is less than required minimum", "Error");
+    			    				// Don't use val as if an integer field don't want to show float value
+    	    						showAlert(this.getResources().getString(R.string.number_minimum_error)+" - ("+query[i+3]+")", this.getResources().getString(R.string.error)); //"Entry is less than required minimum", "Error");
     	    						return false;
     	    					}
     	    				}
     		    		
     	    				else{
     		    				if(comp > val){
-    	    						showAlert(this.getResources().getString(R.string.number_maximum_error)+" - ("+val+")", this.getResources().getString(R.string.error)); //"Entry is greater than required maximum", "Error");
+    	    						showAlert(this.getResources().getString(R.string.number_maximum_error)+" - ("+query[i+3]+")", this.getResources().getString(R.string.error)); //"Entry is greater than required maximum", "Error");
     	    						return false;
     	    					}
     	    				}
@@ -5508,7 +5510,7 @@ public class EntryNote extends Activity implements LocationListener {
 	    	    		
     					if(dbAccess.checkJump2(query[i], "ecpkey", key_val, query[i+1], query[i+2])){ //Village,Village_ID,Cohort,N,Notes))
     						try{
-    		    				val = Integer.valueOf(query[i+3]);
+    		    				val = Float.valueOf(query[i+3]);
     		    			}
     		    			catch(NumberFormatException nfe){
     		    				showAlert(this.getResources().getString(R.string.xml_error), this.getResources().getString(R.string.error)); //"Error in XML form definition", "Error");
@@ -5518,14 +5520,14 @@ public class EntryNote extends Activity implements LocationListener {
     						//Log.i("VAL: ", val+ " COMP "+comp);
     						if(ismin){
     			    			if(comp < val){
-    	    						showAlert(this.getResources().getString(R.string.number_minimum_error)+" - ("+val+")", this.getResources().getString(R.string.error)); //"Entry is less than required minimum", "Error");
+    	    						showAlert(this.getResources().getString(R.string.number_minimum_error)+" - ("+query[i+3]+")", this.getResources().getString(R.string.error)); //"Entry is less than required minimum", "Error");
     	    						return false;
     	    					}
     	    				}
     		    		
     	    				else{
     		    				if(comp > val){
-    	    						showAlert(this.getResources().getString(R.string.number_maximum_error)+" - ("+val+")", this.getResources().getString(R.string.error)); //"Entry is greater than required maximum", "Error");
+    	    						showAlert(this.getResources().getString(R.string.number_maximum_error)+" - ("+query[i+3]+")", this.getResources().getString(R.string.error)); //"Entry is greater than required maximum", "Error");
     	    						return false;
     	    					}
     	    				}
@@ -7378,8 +7380,8 @@ public class EntryNote extends Activity implements LocationListener {
     			// soon as "next" button is pressed it is stored. If it is on second or greater page it will cause message to 
     			// be shown as it is already in the database
     			else if(genkey.length() == 0){
-    				showCheckAlert(this.getResources().getString(R.string.entry_exists_1)+".<br>"+this.getResources().getString(R.string.entry_exists_2)); // "Entry exists for this primary key "+primary_key+".<br>Any changes to record cannot be undone"
-    				secondcheck = true;
+    				showCheckAlert(this.getResources().getString(R.string.entry_exists_1)); //+".<br>"+this.getResources().getString(R.string.entry_exists_2)); // "Entry exists for this primary key "+primary_key+".<br>Any changes to record cannot be undone"
+    				secondcheck = false;  //true;
     				noerrors = false; 	
     				secondkeycheck = true;
     			}
@@ -7489,7 +7491,7 @@ public class EntryNote extends Activity implements LocationListener {
 		
 		AlertDialog.Builder alert = new AlertDialog.Builder(this);
 		alert.setTitle(R.string.invalid_entry); //"Invalid Entry")
-        alert.setMessage(Html.fromHtml(result+".<br><br>"+this.getResources().getString(R.string.next_to_continue))); //Tap Next again to continue"))
+        alert.setMessage(Html.fromHtml(result)); //+".<br><br>"+this.getResources().getString(R.string.next_to_continue))); //Tap Next again to continue"))
         alert.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() { // OK
 
              public void onClick(DialogInterface dialog, int whichButton) {

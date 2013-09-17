@@ -1781,6 +1781,7 @@ public class DBAccess {
         return ret;
     }
     
+        
     public List<Row> fetchAllGPSRows(String table, int remote){
     	getActiveProject();
     	getValues(table);
@@ -2025,10 +2026,14 @@ public class DBAccess {
     	getValues(table);
     	Cursor c;
     	
+    	
     	if(backup)
     		c = db.rawQuery("select * from "+DATABASE_TABLE+"_"+table, null);
     	else
-    		c = db.rawQuery("select * from "+DATABASE_TABLE+"_"+table+" where ecstored = 'N' or ecstored = 'F'", null);
+    		//if(getValue("epicollect_version").equalsIgnoreCase("2"))
+    			c = db.rawQuery("select * from "+DATABASE_TABLE+"_"+table+" where ecstored = 'N' or ecstored = 'F'", null);
+    		//else
+    		//	c = db.rawQuery("select * from "+table+" where ecstored = 'N' or ecstored = 'F'", null);
     		
     	
     	//Cursor c = db.query(DATABASE_TABLE, new String[] {"*"}, null, null, null, null, null);
@@ -6909,7 +6914,7 @@ public int getRemoteDataNew(String project, String table, String entry_selected_
            		rowhash.put("eckey", rowhash.get("ecpkey"));
            		
            		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-           		Date resultdate = new Date(Integer.parseInt(rowhash.get("ecdate")));
+           		Date resultdate = new Date(Long.parseLong(rowhash.get("ecdate")));
            		rowhash.put("ecdatev1", sdf.format(resultdate));
      	       	
            		//int phonekey = getMaxPhonekeyValue("Data");
@@ -6941,7 +6946,7 @@ public int getRemoteDataNew(String project, String table, String entry_selected_
         		  value = "";
         	  
         	  if(indate){
-        		  rowhash.put("\"ecdate\"", value);
+        		  rowhash.put("ecdate", value);
         		  indate = false;
         	  }
         	  

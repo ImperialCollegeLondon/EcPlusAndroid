@@ -201,8 +201,8 @@ public class ParseXML{
     	     if(tablename.length() == 0) {
 	        	 HashMap<String, String> temptablekeyhash = new HashMap<String, String>();
 	        	 temptablekeyhash.put("tablenum", "1");
-	        	 temptablekeyhash.put("tablename", project); //"Data");
-	        	 tablename = project; //"Data";
+	        	 temptablekeyhash.put("tablename", "Data"); //project); //
+	        	 tablename = "Data"; //project; //
 	        	 tablekey = "eckey";
 	        	 temptablekeyhash.put("tablekey", tablekey); 
 	        	 temptablekeyhash.put("maintable", "1"); 

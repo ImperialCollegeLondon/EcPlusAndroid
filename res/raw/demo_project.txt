@@ -1,86 +1,52 @@
-<?xml version="1.0" encoding="utf-8"?>
-
+<?xml version="1.0" encoding="UTF-8"?>
 <ecml version="1">
 	<model>
-		<submission id="schools2" projectName="schools2" allowDownloadEdits="false" versionNumber="2.1" />
-		<uploadToServer>http://plus.epicollect.net/schools2/upload</uploadToServer>
-		<downloadFromServer>http://plus.epicollect.net/schools2/download</downloadFromServer>
+		<submission id="schools" projectName="Schools" allowDownloadEdits="false" versionNumber="2.1"/>
+		<uploadToServer>http://plus.epicollect.net/Schools/upload</uploadToServer>
+		<downloadFromServer>http://plus.epicollect.net/Schools/download</downloadFromServer>
 	</model>
 
-	<form num="1" name="schools" key="schoolID" main="true"   > 
-		<input ref="schoolID" required="true" title="true">
-			<label>What is the name of the school?</label>
+	<form num="1" name="School" key="SchoolName" main="true"> 
+		<input ref="SchoolName" required="true" title="true">
+			<label>What is the schools name?</label>
 		</input>
-		<input ref="numberPupils" integer="true">
+		<input ref="headTeacher">
+			<label>What is the Headteachers name?</label>
+		</input>
+		<input ref="PupilNumber" required="true" integer="true">
 			<label>How many pupils attend the school?</label>
 		</input>
-		<input ref="schoolYearStart" date="dd/MM/yyyy">
+		<input ref="SchoolStartDate" setdate="dd/MM/yyyy">
 			<label>What date does the school year start?</label>
 		</input>
-		<input ref="schoolTimeStart" time="HH:mm">
+		<input ref="SchoolStartTime" settime="HH:mm">
 			<label>What time does the school day start?</label>
 		</input>
-		<select1 ref="schoolKind">
-			<label>What kind of school is this?</label>
-		
-				<item>
-					<label>Girls</label>
+		<select1 ref="SchoolKind">
+			<label>What kind of school?</label>
+		<item><label>Boys</label>
+					<value>boys</value>
+				</item><item><label>Girls</label>
 					<value>Girls</value>
-				</item>
-				<item>
-					<label>Boys</label>
-					<value>Boys</value>
-				</item>
-				<item>
-					<label>Mixed</label>
-					<value>Mixed</value>
+				</item><item><label>Mixed</label>
+					<value>mixed</value>
 				</item></select1>
-		<select ref="schoolFacilities">
-			<label>Does the school have any of the following facilities?</label>
-		
-				<item>
-					<label>Playing Fields</label>
-					<value>playingFields</value>
-				</item>
-				<item>
-					<label>Swimming Poll</label>
-					<value>swimmingPool</value>
-				</item>
-				<item>
-					<label>Basketball Court</label>
-					<value>basketball</value>
-				</item>
-				<item>
-					<label>Tennis Court</label>
-					<value>tennis</value>
+		<select ref="SchoolFacilities">
+			<label>Does the school have the following facilities?</label>
+		<item><label>Playing Fields</label>
+					<value>PlayFields</value>
+				</item><item><label>Swimming Pool</label>
+					<value>SwimPool</value>
+				</item><item><label>Basketball Court</label>
+					<value>Basketball</value>
+				</item><item><label>Tennis Court</label>
+					<value>Tennis</value>
 				</item></select>
-		<location ref="schoolLocation">
-			<label>Record school location</label>
+		<location ref="SchoolLocation">
+			<label>Record Schools Location</label>
 		</location>
-		<photo ref="schoolPhoto">
+		<photo ref="SchoolPhoto">
 			<label>Take a photo of the school</label>
-		</photo>
-	</form>
-	<form num="2" name="Teachers" key="teacherName" main="true"   > 
-		<input ref="teacherName" required="true" title="true">
-			<label>What is the teachers name?</label>
-		</input>
-		<input ref="schoolID">
-			<label>What is the name of the school?</label>
-		</input>
-		<photo ref="teacherPhoto">
-			<label>Take a photo of the teacher</label>
-		</photo>
-	</form>
-	<form num="3" name="Pupils" key="pupilName" main="true"   > 
-		<input ref="pupilName" required="true" title="true">
-			<label>What is the pupils name?</label>
-		</input>
-		<input ref="teacherName">
-			<label>What is the teachers name?</label>
-		</input>
-		<photo ref="teacherPhoto">
-			<label>Take a photo of the teacher</label>
 		</photo>
 	</form>
 </ecml>

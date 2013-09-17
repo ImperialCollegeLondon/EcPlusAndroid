@@ -86,7 +86,7 @@ import android.widget.ImageView;
 @SuppressLint("NewApi")
 public class Epi_collect extends Activity implements Runnable{
 	
-	private static final String APK_VERSION = "1.0"; //"1.0"; // SCORE 2.2 // "2.6.16"; //
+	private static final String APK_VERSION = "1.7"; //"1.0"; // SCORE 2.2 // "2.6.16"; //
 	private static final int ACTIVITY_NEW = 0;
 	private static final int ACTIVITY_EMAIL = 13;
 	private static final int ACTIVITY_EMAIL2 = 20;
@@ -245,7 +245,7 @@ public class Epi_collect extends Activity implements Runnable{
 		iview.setImageBitmap(bitMap); 
 
 		// Demo project code
-		/*if(dbAccess.getFirstrun() == 0){
+		if(dbAccess.getFirstrun() == 0){
 			try{
 				String str;
 				StringBuffer buf = new StringBuffer("");	
@@ -272,7 +272,7 @@ public class Epi_collect extends Activity implements Runnable{
 			catch(Exception e){
 				Log.i("PARSING DEMO ERROR",e.toString());
 			}
-		} */
+		} 
     	
 		proj_spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 		    public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
