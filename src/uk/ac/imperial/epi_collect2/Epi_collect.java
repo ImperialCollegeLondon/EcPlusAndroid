@@ -86,7 +86,7 @@ import android.widget.ImageView;
 @SuppressLint("NewApi")
 public class Epi_collect extends Activity implements Runnable{
 	
-	private static final String APK_VERSION = "1.7"; //"1.0"; // SCORE 2.2 // "2.6.16"; //
+	private static final String APK_VERSION = "1.8"; //"1.0"; // SCORE 2.2 // "2.6.16"; //
 	private static final int ACTIVITY_NEW = 0;
 	private static final int ACTIVITY_EMAIL = 13;
 	private static final int ACTIVITY_EMAIL2 = 20;
@@ -123,7 +123,8 @@ public class Epi_collect extends Activity implements Runnable{
     private Button synchButton, picbut, audbut, vidbut; //, remoteButton;
     private int synch_type = 0;
     private Thread thread;
-    private boolean getimages, is_v1 = false, allsynched = true, mediasynched = true;;
+    private boolean getimages, allsynched = true, mediasynched = true;
+    public static boolean is_v1 = false; // Need to check this in ParseXML in case project has no forms 
     private  int dataresult = 0;
     private HashMap<String, StringBuffer> tableshash;
     private String email = "", sIMEI = "1"; //, load_fail_url;
@@ -402,6 +403,7 @@ public class Epi_collect extends Activity implements Runnable{
 	    			menu.add(0, DEL_REM, 0, R.string.menu_del_rem);
 	    		if(dbAccess.checkSynchStatus("F"))
 	    			menu.add(0, DEL_FAIL, 0, R.string.menu_del_fail);
+
 	    		menu.add(0, DELETE_PROJECT, 0, R.string.delete_project);
 	    		menu.add(0, DEL_ALL, 0, R.string.menu_del_projall);	 
 	    		//menu.add(0, VERSION, 0, "Version");   

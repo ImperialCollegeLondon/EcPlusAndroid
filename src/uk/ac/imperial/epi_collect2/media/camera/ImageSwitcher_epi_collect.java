@@ -36,6 +36,7 @@ import uk.ac.imperial.epi_collect2.util.db.DBAccess;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -68,6 +69,7 @@ import android.widget.ImageSwitcher;
 import android.widget.ImageView;
 import android.widget.ViewSwitcher;
 
+@SuppressLint("NewApi")
 public class ImageSwitcher_epi_collect extends Activity implements
 AdapterView.OnItemSelectedListener, ViewSwitcher.ViewFactory { 
 
@@ -378,10 +380,20 @@ private void showToast(String text){
 	//return;
 	}
    	
-	//copyFile(file, new File(picdir, +imagefile+".jpg"));
-	//Log.i("IMAGEFILE", imagefile);
-	copyFile(file, new File(picdir+"/"+imagefile));
-   	
+	BitmapFactory.Options options = new BitmapFactory.Options();
+	options.inSampleSize = 8;
+	Bitmap bmp = BitmapFactory.decodeFile(Epi_collect.appFiles+"/temp.jpg", options);
+
+	int w = bmp.getWidth();
+	int h = bmp.getHeight();
+	//if((w > h && w > 2048) || ( h > w && h > 2048)){
+	if(w > 2048 || h > 2048){
+		resizeImage(Epi_collect.appFiles+"/temp.jpg", picdir+"/"+imagefile, 2048, 1536);
+	}
+	else{
+		copyFile(file, new File(picdir+"/"+imagefile));
+	}
+	
    	try{
    		file.delete();
    	}
@@ -389,7 +401,9 @@ private void showToast(String text){
    		
    	}
 
-    try {
+   	resizeImage(picdir+"/"+imagefile, thumbdir+"/"+imagefile, 512, 384);
+   	
+   /* try {
     	// load the original BitMap (500 x 500 px)
     	// This sometimes causes out of memory errors
     	//Bitmap bmp = BitmapFactory.decodeFile(picdir+"/"+imagefile);
@@ -442,7 +456,7 @@ private void showToast(String text){
     		Log.i("ImageSwitcher","FileNotFoundException generated when using camera") ;
     	} catch (IOException e) {
     		Log.i("ImageSwitcher","IOException generated when using camera") ;
-    	}
+    	} */
 
     		//if(!gallery){
     			Bundle extras = getIntent().getExtras();
@@ -453,6 +467,66 @@ private void showToast(String text){
                 finish();
     		//}
 } 
+
+
+private void resizeImage(String oldimage, String newimage, int w, int h){
+	try {
+		// load the original BitMap (500 x 500 px)
+		// This sometimes causes out of memory errors
+		//Bitmap bmp = BitmapFactory.decodeFile(picdir+"/"+imagefile);
+	
+		// Used this instead
+	
+		BitmapFactory.Options options = new BitmapFactory.Options();
+		options.inSampleSize = 8;
+		Bitmap bmp = BitmapFactory.decodeFile(oldimage, options);
+
+				
+		int width = bmp.getWidth();
+		int height = bmp.getHeight();
+		int newWidth, newHeight;
+		        
+		if(width > height){
+			newWidth = w;
+			newHeight = h;
+		}
+		else{
+			newWidth = h;
+			newHeight = w;
+		}
+		       
+		// calculate the scale - in this case = 0.4f
+		float scaleWidth = ((float) newWidth) / width;
+		float scaleHeight = ((float) newHeight) / height;
+		       
+		// create a matrix for the manipulation
+		Matrix matrix = new Matrix();
+		// resize the bit map
+		matrix.postScale(scaleWidth, scaleHeight);
+		// rotate the Bitmap
+		//matrix.postRotate(45);
+
+		// recreate the new Bitmap
+		Bitmap resizedBitmap = Bitmap.createBitmap(bmp, 0, 0, width, height, matrix, true); 
+		FileOutputStream out = new FileOutputStream(newimage);//this.openFileOutput("ping_media.jpg",MODE_PRIVATE);
+		resizedBitmap.compress(CompressFormat.JPEG, 50, out) ;
+		out.close() ;
+	
+		// Free up the memory used by the bitmaps
+		// Without this can get out of memory exception when 
+		// subsequent photo taken
+		bmp.recycle();
+		resizedBitmap.recycle();
+	
+		//media_path = "/sdcard/dcim/.thumbnails/" ;
+		} catch (FileNotFoundException e) {
+			Log.i("ImageSwitcher","FileNotFoundException generated when using camera") ;
+		} catch (IOException e) {
+			Log.i("ImageSwitcher","IOException generated when using camera") ;
+		}
+}
+
+
 
 public String getPath(Uri uri) {
     String[] projection = { MediaStore.Images.Media.DATA };
@@ -699,6 +773,7 @@ private static void copyFile(File f1, File f2){ //String srFile, String dtFile){
     	Log.i("ImageSwitcher", e.toString());
     }
   }
+
 
 
 }

@@ -198,7 +198,7 @@ public class ParseXML{
     	      
     	      // For EpiCollect1 form data
     	      
-    	     if(tablename.length() == 0) {
+    	      else if(tablename.length() == 0 && Epi_collect.is_v1) {
 	        	 HashMap<String, String> temptablekeyhash = new HashMap<String, String>();
 	        	 temptablekeyhash.put("tablenum", "1");
 	        	 temptablekeyhash.put("tablename", "Data"); //project); //
@@ -226,6 +226,9 @@ public class ParseXML{
 	        	 createTable();
 	        	 createIndividualTable();
 	        	 createRow();
+    	     }
+    	     else{
+    	    	 return false;
     	     }
     	      
     	      //HashMap<String, StringBuffer> tableshash = new HashMap<String, StringBuffer>();
