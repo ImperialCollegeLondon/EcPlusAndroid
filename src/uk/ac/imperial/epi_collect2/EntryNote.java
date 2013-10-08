@@ -1350,12 +1350,12 @@ public class EntryNote extends Activity implements LocationListener {
         
         for(String key : hiddentextviewkeys){
         	TelephonyManager mTelephonyMgr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
-        	String sIMEI = mTelephonyMgr.getDeviceId();
+        	//String sIMEI = mTelephonyMgr.getDeviceId();
     	
-        	Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        	//Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
    	   	
-        	sIMEI += "_"+cal.getTimeInMillis();
-        	textviewhash.get(key).setText(sIMEI);
+        	//sIMEI += "_"+cal.getTimeInMillis();
+        	textviewhash.get(key).setText(UUID.randomUUID().toString());
         	
         }
         
@@ -2025,13 +2025,13 @@ public class EntryNote extends Activity implements LocationListener {
 	    		if(primary_keys.contains(viewvalues[1])){
 	    			et = new EditText(this);
 	    			if(newentry == true){
-	    				TelephonyManager mTelephonyMgr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
-	    				String sIMEI = mTelephonyMgr.getDeviceId();
+	    				//TelephonyManager mTelephonyMgr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+	    				//String sIMEI = mTelephonyMgr.getDeviceId();
 	    	    	
-	    				Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+	    				//Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 	    				
-	    				sIMEI += "_"+cal.getTimeInMillis();
-	    				et.setText(sIMEI);}
+	    				//sIMEI += "_"+cal.getTimeInMillis();
+	    				et.setText(UUID.randomUUID().toString());}
 	    			else{
 	    				et.setText(dbAccess.getValue(table, viewvalues[1], primary_key));
 	    			}

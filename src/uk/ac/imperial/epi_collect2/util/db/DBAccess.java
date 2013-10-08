@@ -3613,9 +3613,9 @@ public String synchroniseAll(String sIMEI, String email){
 	    if(local_urlString.equalsIgnoreCase("None"))
 			synchlocal = false;
 	    
-	    urlString += "?type=data"; //&phoneid="+sIMEI;
+	    urlString += "?type=data&phoneid="+sIMEI;
        	//urlString += "&email="+email;
-       	local_urlString += "?type=data"; //&phoneid="+sIMEI;
+       	local_urlString += "?type=data&phoneid="+sIMEI;
        	//local_urlString += "&email="+email;
 				
        	//Log.i("URL STRING", urlString);

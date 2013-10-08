@@ -40,6 +40,8 @@ import android.content.DialogInterface;
 //import android.content.DialogInterface.OnClickListener; 
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.provider.Settings.Secure;
+//import java.util.UUID;
 
 @SuppressLint("NewApi")
 public class ListRecords extends ListActivity implements Runnable{
@@ -98,6 +100,7 @@ public class ListRecords extends ListActivity implements Runnable{
    	private String query;
    	private Thread thread;
    	private TextView emptytv;
+   	private String android_id = "";
    	
     /** Called when the activity is first created. */
     @Override
@@ -131,6 +134,8 @@ public class ListRecords extends ListActivity implements Runnable{
         dbAccess.open();
         
         super.setTitle("EpiCollect "+dbAccess.getProject());
+        
+        android_id = Secure.getString(this.getContentResolver(), Secure.ANDROID_ID); 
                 
         table = extras.getString("table");
               
@@ -613,7 +618,7 @@ public class ListRecords extends ListActivity implements Runnable{
     
     public void run(){
     	// ASUS Transformer doesn't have IMEI number so have to ensure it has a value or synchronisation fails
-    	String sIMEI = "1";
+    	//String sIMEI = "1";
     	   	
     	String email = "NA";
     	    	
@@ -634,7 +639,7 @@ public class ListRecords extends ListActivity implements Runnable{
      	
      	// ASUS Transformer doesn't have IMEI number so have to ensure it has a value or synchronisation fails
      	
-     	TelephonyManager mTelephonyMgr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+     	/*TelephonyManager mTelephonyMgr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
  	 	try{
      		sIMEI = mTelephonyMgr.getDeviceId(); 	
      	}
@@ -648,18 +653,18 @@ public class ListRecords extends ListActivity implements Runnable{
      	}
      	catch(NullPointerException npe){
      		sIMEI = "1";
-     	}
+     	}*/
  
     	//myProgressDialog = ProgressDialog.show(this, "Please wait...", "Synchronizing Data...", true);
         	   result = this.getResources().getString(R.string.synch_failed); //"Synchronisation Failed";
                 try{
                 	if(dbAccess.getValue("epicollect_version").equalsIgnoreCase("2")){
              			Log.i("CALLING SYNCH", "Version 2");
-             			result = dbAccess.synchroniseAll(sIMEI, email);	
+             			result = dbAccess.synchroniseAll(android_id, email);	
                 	}
              		else{
              			Log.i("CALLING SYNCH", "Version 1");
-             			result = dbAccess.synchroniseV1(sIMEI, email);
+             			result = dbAccess.synchroniseV1(android_id, email);
              		}
                 	//result = dbAccess.synchroniseAll(sIMEI, email);
                 } catch (Exception e) {

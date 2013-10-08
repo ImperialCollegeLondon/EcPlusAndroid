@@ -55,6 +55,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.Settings.Secure;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Gravity;
@@ -127,9 +128,10 @@ public class Epi_collect extends Activity implements Runnable{
     public static boolean is_v1 = false; // Need to check this in ParseXML in case project has no forms 
     private  int dataresult = 0;
     private HashMap<String, StringBuffer> tableshash;
-    private String email = "", sIMEI = "1"; //, load_fail_url;
+    private String email = ""; //, load_fail_url;
     public static String project_server = "";
     public static File appFiles;
+    private String android_id;
     
     // Test 3
     /** Called when the activity is first created. 
@@ -155,6 +157,8 @@ public class Epi_collect extends Activity implements Runnable{
         
         dbAccess = new DBAccess(this);
 	    dbAccess.open();
+	    
+	    android_id = Secure.getString(this.getContentResolver(), Secure.ANDROID_ID);
 	    
 	    project_server = dbAccess.getSettings("url");
         
@@ -200,7 +204,7 @@ public class Epi_collect extends Activity implements Runnable{
     	
     	// ASUS Transformer doesn't have IMEI number so have to ensure it has a value or synchronisation fails
     	
-    	TelephonyManager mTelephonyMgr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+    	/*TelephonyManager mTelephonyMgr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
 	 	try{
     		sIMEI = mTelephonyMgr.getDeviceId(); 	
     	}
@@ -214,7 +218,7 @@ public class Epi_collect extends Activity implements Runnable{
     	}
     	catch(NullPointerException npe){
     		sIMEI = "1";
-    	}
+    	}*/
 	 	
         String[] allprojects = dbAccess.getProjects();
     	
@@ -1650,7 +1654,7 @@ public class Epi_collect extends Activity implements Runnable{
     public void run() {
     	 	  
     	if(synch_type == 8){
-    		if(dbAccess.backupProject(sIMEI, false)){
+    		if(dbAccess.backupProject(android_id, false)){
     			myProgressDialog.dismiss();
     			Looper.prepare();
 				showAlert(this.getResources().getString(R.string.success), this.getResources().getString(R.string.backup_success)); //"Success", "Project Backup Successful");
@@ -1720,7 +1724,7 @@ public class Epi_collect extends Activity implements Runnable{
         		 dataresult = dbAccess.getRemoteDataV1(); //fetchXML();
         	 }
         	 else{
-        		 dataresult = dbAccess.getRemoteData(selected_project, selected_table, "", "", remoteset, getimages, false, sIMEI, email);
+        		 dataresult = dbAccess.getRemoteData(selected_project, selected_table, "", "", remoteset, getimages, false, android_id, email); //sIMEI
         	 }
          	
          } catch (Exception e) {
@@ -1745,7 +1749,7 @@ public class Epi_collect extends Activity implements Runnable{
  		 dataresult = 0;
  		Looper.prepare();
          try{
-        	dataresult = dbAccess.getRemoteData(selected_project, "", "", "", false, false, true, sIMEI, email); 
+        	dataresult = dbAccess.getRemoteData(selected_project, "", "", "", false, false, true, android_id, email); // sIMEI
          	
          } catch (Exception e) {
          	Log.i(getClass().getSimpleName(), "ERROR: "+ e);
@@ -1764,7 +1768,7 @@ public class Epi_collect extends Activity implements Runnable{
 		 dataresult = 0;
 		Looper.prepare();
         try{
-        	dataresult = dbAccess.loadFile(appFiles+"/"+selected_project+"/"+sIMEI+"_data_backup.txt"); 
+        	dataresult = dbAccess.loadFile(appFiles+"/"+selected_project+"/"+android_id+"_data_backup.txt"); 
         	
         } catch (Exception e) {
         	Log.i(getClass().getSimpleName(), "ERROR: "+ e);
@@ -1784,23 +1788,23 @@ public class Epi_collect extends Activity implements Runnable{
  	 	 
          try{
          	if(synch_type == 1){
-         		synchresult = dbAccess.uploadAllImages(sIMEI, email);
+         		synchresult = dbAccess.uploadAllImages(android_id, email); // sIMEI
          	}
          	else if(synch_type == 2){
-         		synchresult = dbAccess.uploadAllVideos(sIMEI, email);
+         		synchresult = dbAccess.uploadAllVideos(android_id, email);
          	}
          	else if(synch_type == 3){
-         		synchresult = dbAccess.uploadAllAudio(sIMEI, email);
+         		synchresult = dbAccess.uploadAllAudio(android_id, email);
          	}
          	else if(synch_type == 4){
          		
          		if(dbAccess.getValue("epicollect_version").equalsIgnoreCase("2")){
-         			synchresult = dbAccess.synchroniseAll(sIMEI, email);
+         			synchresult = dbAccess.synchroniseAll(android_id, email);
          			//if(synchresult.equalsIgnoreCase("Success"))
          			//	synchresult = "Synchronisation successful";
          		}
          		else{
-             		synchresult = dbAccess.synchroniseV1(sIMEI, email);
+             		synchresult = dbAccess.synchroniseV1(android_id, email);
          		}
          	}
          } catch (Exception e) {
@@ -1811,7 +1815,7 @@ public class Epi_collect extends Activity implements Runnable{
          Looper.prepare();
          
          if(synchresult.equalsIgnoreCase(this.getResources().getString(R.string.synch_success))){ //synchresult.startsWith("ERROR:")){ 
-        	 showAlert(this.getResources().getString(R.string.synch_success), synchresult); // "Success"
+        	 showAlert(this.getResources().getString(R.string.success), synchresult); // "Success"
         	    	
         }
          else if(synchresult.startsWith("Success")){
@@ -1829,7 +1833,7 @@ public class Epi_collect extends Activity implements Runnable{
  		         		setSynchButton();
  		       		}
  		  	 	});
-        	 showAlert(this.getResources().getString(R.string.synch_success), synchresult); //, synch_type);
+        	 showAlert(this.getResources().getString(R.string.success), synchresult); //, synch_type);
         	         	 
          }
 		else{
@@ -1965,7 +1969,7 @@ public class Epi_collect extends Activity implements Runnable{
     
     private void loadBackup(){
     	try{
-        	File f = new File(appFiles+"/"+selected_project+"/"+sIMEI+"_data_backup.txt");
+        	File f = new File(appFiles+"/"+selected_project+"/"+android_id+"_data_backup.txt");
         	if(!f.exists())
         		showAlert(this.getResources().getString(R.string.error), this.getResources().getString(R.string.no_backup)); //"Error", "No project backup file available");
         		else{
@@ -2001,7 +2005,7 @@ public class Epi_collect extends Activity implements Runnable{
     	}
     	
     	try{
-        	File f = new File(appFiles+"/"+selected_project+"/"+sIMEI+"_data_backup.xml.zip");
+        	File f = new File(appFiles+"/"+selected_project+"/"+android_id+"_data_backup.xml.zip");
         	if(!f.exists()){
         		showAlert(this.getResources().getString(R.string.error), this.getResources().getString(R.string.backup_not_present)); //"Error", "Backup file not present, backup project first");
         		return;
@@ -2023,7 +2027,7 @@ public class Epi_collect extends Activity implements Runnable{
     		  emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, this.getResources().getString(R.string.email_5)+" - "+selected_project);
     		  emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, this.getResources().getString(R.string.email_6)+" - "+selected_project+"\n\n"+this.getResources().getString(R.string.email_3)+": "+mTelephonyMgr.getDeviceId());
     		  try{
-	            	File f = new File(appFiles+"/"+selected_project+"/picdir"+sIMEI+"_data_backup.xml.zip");
+	            	File f = new File(appFiles+"/"+selected_project+"/"+android_id+"_data_backup.xml.zip");
 	            	if(f.exists())
 	            		emailIntent.putExtra(android.content.Intent.EXTRA_STREAM, Uri.fromFile(f));
 	            	}
