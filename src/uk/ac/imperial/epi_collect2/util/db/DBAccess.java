@@ -97,7 +97,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.PowerManager;
 //import android.telephony.TelephonyManager;
-import android.telephony.TelephonyManager;
+//import android.telephony.TelephonyManager;
 import android.util.Log; 	 
 import android.widget.Toast;
 
@@ -122,6 +122,7 @@ public class DBAccess {
         public String ectitle;
         public String ecpkey;
         public String ecphonekey;
+        public String ecjumped;
         public Hashtable<String, String> datastrings = new Hashtable<String, String>();
         public Hashtable<String, Boolean> checkboxes = new Hashtable<String, Boolean>();
         public Hashtable<String, Integer> rgroups = new Hashtable<String, Integer>();
@@ -327,8 +328,11 @@ public class DBAccess {
     	
     	sb.append(", ecphonekey int");
     	
+    	sb.append(", ecjumped text");
+	 	
     	sb.append(", message text");
-    	 	
+    	
+    	
     	if(branch_caller != null && branch_caller.length() > 0){
     		sb.append(", ecfkey text, FOREIGN KEY (ecfkey) REFERENCES data_"+project+"_"+branch_caller+"(ecpkey));"); //"+branch_caller_key+"  "+branch_caller_key+"
     		//Log.i("BRANCH CASCADE", "FOREIGN KEY (Caller_Key) REFERENCES data_"+project+"_"+branch_caller+"("+branch_caller_key+"))");
@@ -336,11 +340,11 @@ public class DBAccess {
     	}
     	else{
     		if(!rtable.equals("Null")){
-    	    	sb.append(", ecfkey text, ecjumped text, FOREIGN KEY (ecfkey) REFERENCES data_"+project+"_"+rtable+"(ecpkey));");
+    	    	sb.append(", ecfkey text, FOREIGN KEY (ecfkey) REFERENCES data_"+project+"_"+rtable+"(ecpkey));");
     	    	//Log.i("FOREIGN KEY", "FOREIGN KEY (fkey) REFERENCES data_"+project+"_"+rtable+"(pkey))");
     		}
     		else
-    			sb.append(", ecfkey text, ecjumped text);");
+    			sb.append(", ecfkey text);");
     	}
     	    			
     	//sb.append(", ecjumped text);");
@@ -2224,6 +2228,9 @@ public class DBAccess {
         
         row.ecphonekey = c.getString(pos);
         //thisc.close();
+    
+        pos++;
+        row.ecjumped = c.getString(pos);
         return row;
 	}
     
@@ -3661,10 +3668,12 @@ public String synchroniseAll(String sIMEI, String email){
 	            	
 		            	data += "&" + URLEncoder.encode("ecTimeCreated", "UTF-8") + "=" + URLEncoder.encode(row.date, "UTF-8");
 		            	data += "&" + URLEncoder.encode("ecPhoneID", "UTF-8") + "=" + URLEncoder.encode(sIMEI, "UTF-8");
+		            	data += "&" + URLEncoder.encode("ecJumped", "UTF-8") + "=" + URLEncoder.encode(row.ecjumped, "UTF-8");
         		
 		            	if(synchlocal){
 		            		localdata += "&" + URLEncoder.encode("ecTimeCreated", "UTF-8") + "=" + URLEncoder.encode(row.date, "UTF-8");
 		            		localdata += "&" + URLEncoder.encode("ecPhoneID", "UTF-8") + "=" + URLEncoder.encode(sIMEI, "UTF-8");
+		            		localdata += "&" + URLEncoder.encode("ecJumped", "UTF-8") + "=" + URLEncoder.encode(row.ecjumped, "UTF-8");
 		            	}
         		          	
 		            	pkey = "";
@@ -3925,7 +3934,7 @@ public String synchroniseAll(String sIMEI, String email){
 	            				retstr = "0";
 	                       
 	            			//Log.i("DBAccess","Server Response "+retstr+" CODE "+conn.getResponseCode()+ " MESSAGE "+conn.getResponseMessage());
-	            			//Log.i("DATA SENT", data);
+	            			Log.i("DATA SENT", data);
 	            			
 	            			responsecode = ""+conn.getResponseCode();
 	            			responsemessage = ""+conn.getResponseMessage();
@@ -4410,8 +4419,6 @@ public String synchroniseAll(String sIMEI, String email){
 		   filename = filename+".jpg";
 	   }
 	   
-       // Is this the place are you doing something wrong.
-
        String lineEnd = "\r\n";
        String twoHyphens = "--";
        String boundary =  "*****";
@@ -4705,6 +4712,8 @@ public String synchroniseAll(String sIMEI, String email){
 	            	ostxt.write("\tecTimeCreated\t"+row.date);
 	            	os.write("\n\t\t\t<ecPhonekey>"+row.ecphonekey+"</ecPhonekey>");
 	            	ostxt.write("\tecPhonekey\t"+row.ecphonekey);
+	            	os.write("\n\t\t\t<ecJumped>"+row.ecjumped+"</ecJumped>");
+	            	ostxt.write("\tecJumped\t"+row.ecjumped);
 	            	for(String key : row.datastrings.keySet()){
 	            		xkey = key.replaceAll("\\s+", "_");
 	            			            		
@@ -5238,6 +5247,7 @@ public String synchroniseAll(String sIMEI, String email){
 							continue;
 						value = items.elementAt(i+1);
 						
+						Log.i("FILE LOADING", "ID="+id+" VALUE="+value);
 						//if(value.length() == 0)
 						//	continue;
   		 			 		
@@ -5251,6 +5261,10 @@ public String synchroniseAll(String sIMEI, String email){
 						if(id.equalsIgnoreCase("ecStored")){
 							ih.bind(positionpos.indexOf("ecstored"), value);
 							storevalueset = value;
+						}
+						
+						if(id.equalsIgnoreCase("ecJumped")){
+							ih.bind(positionpos.indexOf("ecjumped"), value);
 						}
 						
 						if(id.equalsIgnoreCase("ecTimeCreated")){
@@ -6633,6 +6647,7 @@ public int getRemoteDataNew(String project, String table, String entry_selected_
     	positionvec.addElement("ectitle");
     	positionvec.addElement("ecpkey");
     	positionvec.addElement("ecphonekey");
+    	positionvec.addElement("ecjumped");
     	positionvec.addElement("message"); 
     	positionvec.addElement("ecfkey");
     	

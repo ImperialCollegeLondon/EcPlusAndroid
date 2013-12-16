@@ -17,6 +17,7 @@ import uk.ac.imperial.epi_collect2.util.db.DBAccess;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -32,7 +33,7 @@ import android.os.Looper;
 //import android.text.TextWatcher;
 //import android.util.Log;
 //import android.view.Gravity;
-import android.telephony.TelephonyManager;
+//import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Gravity;
@@ -123,6 +124,7 @@ public class TableSelect extends Activity {
 	private String entry_selected_table="", sIMEI = "", email = "";
 	private boolean hasextras = false;
 	
+	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle icicle) {
 		super.onCreate(icicle);
@@ -160,8 +162,8 @@ public class TableSelect extends Activity {
     	  }
     	}
     	
-    	TelephonyManager mTelephonyMgr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
-	 	sIMEI = mTelephonyMgr.getDeviceId();
+    	//TelephonyManager mTelephonyMgr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+	 	//sIMEI = mTelephonyMgr.getDeviceId();
 	 	
 	 	// If there is only 1 table skip past the table selection
 	 	//Log.i("ITEMS", ""+items.size());

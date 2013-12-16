@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Calendar;
 import java.util.TimeZone;
+import java.util.UUID;
 
 import uk.ac.imperial.epi_collect2.Epi_collect;
 import uk.ac.imperial.epi_collect2.R;
@@ -21,7 +22,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Environment;
-import android.telephony.TelephonyManager;
+//import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -169,9 +170,9 @@ public class Camcorder extends Activity {
            	  	if(existing_videoid.equalsIgnoreCase("-1")){
            	  		Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 	    		   	
-	    		   	String date = ""+cal.getTimeInMillis();
-	    			TelephonyManager mTelephonyMgr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
-	    			videoid = video_table+"_"+video_refid+"_"+mTelephonyMgr.getDeviceId()+ "_"+date+".mp4";
+	    		   	//String date = ""+cal.getTimeInMillis();
+	    			//TelephonyManager mTelephonyMgr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+	    			videoid = video_table+"_"+video_refid+"_"+UUID.randomUUID().toString()+".mp4";
            	  	}
            	  	else
            	  		videoid = existing_videoid;

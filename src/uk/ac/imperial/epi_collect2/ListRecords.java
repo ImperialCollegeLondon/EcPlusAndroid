@@ -24,7 +24,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 //import android.provider.Settings;
-import android.telephony.TelephonyManager;
+//import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -784,7 +784,7 @@ public class ListRecords extends ListActivity implements Runnable{
     }
     
     private void showDetails(int position){
-    	
+    	   	
     	Intent i = new Intent(this, DetailsView.class);
 		
 		i.putExtra("table", table);

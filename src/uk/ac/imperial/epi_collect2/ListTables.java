@@ -24,8 +24,9 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.Settings.Secure;
 //import android.text.InputType;
-import android.telephony.TelephonyManager;
+//import android.telephony.TelephonyManager;
 import android.util.Log;
 //import android.view.Gravity;
 import android.view.KeyEvent;
@@ -706,8 +707,8 @@ public class ListTables extends Activity {
 	   String result = ""; //"Success";
 	   // 
 	    private void synchroniseData(){ 
-	    	TelephonyManager mTelephonyMgr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
-			final String sIMEI = mTelephonyMgr.getDeviceId();
+	    	//TelephonyManager mTelephonyMgr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+			final String android_id = Secure.getString(this.getContentResolver(), Secure.ANDROID_ID);
 			
 	    	
 	    	myProgressDialog = ProgressDialog.show(this, this.getResources().getString(R.string.please_wait), this.getResources().getString(R.string.synch_failed)+"...", true);
@@ -718,7 +719,7 @@ public class ListTables extends Activity {
 	           public void run() {
 	        	   result = synch_failed; //"Synchronisation Failed";
 	                try{
-	                	result = dbAccess.synchroniseAll(sIMEI, email);
+	                	result = dbAccess.synchroniseAll(android_id, email);
 	                } catch (Exception e) {
 	                	Log.i(getClass().getSimpleName(), "ERROR: "+ e);
 	                }

@@ -178,8 +178,8 @@ public void onCreate(Bundle icicle) {
 	  }
 	}
 	
-	TelephonyManager mTelephonyMgr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
- 	sIMEI = mTelephonyMgr.getDeviceId();
+	//TelephonyManager mTelephonyMgr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+ 	//sIMEI = mTelephonyMgr.getDeviceId();
     
     
 }

@@ -72,7 +72,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.MediaStore;
-import android.telephony.TelephonyManager;
+//import android.telephony.TelephonyManager;
 import android.text.Html;
 import android.text.InputType;
 import android.text.format.DateFormat;
@@ -576,10 +576,11 @@ public class EntryNote extends Activity implements LocationListener {
 	   			if(fpath.length() > 0){
 	   				existing_photoid = existing_photoid.replaceAll("\\s+", "");
 	   				if(existing_photoid.equalsIgnoreCase("-1") || existing_photoid.length() == 0){
-	   					Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-	   				   	String date = ""+cal.getTimeInMillis();
-	   					TelephonyManager mTelephonyMgr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
-	   					imagefile = coretable+"_"+imageviewposhash.get(thispage)+"_"+mTelephonyMgr.getDeviceId()+ "_"+date+".jpg";
+	   					//Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+	   				   	//String date = ""+cal.getTimeInMillis();
+	   					//TelephonyManager mTelephonyMgr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+	   				   	//imagefile = coretable+"_"+imageviewposhash.get(thispage)+"_"+mTelephonyMgr.getDeviceId()+ "_"+date+".jpg";
+	   					imagefile = coretable+"_"+imageviewposhash.get(thispage)+"_"+UUID.randomUUID().toString()+".jpg";
 	   				}
 	   				else
 	   					imagefile = existing_photoid;
@@ -1144,7 +1145,7 @@ public class EntryNote extends Activity implements LocationListener {
     		if(!nodisplay.contains(key) && !setextras.containsKey(key)){
     			textviewhash.get(key).setText("");
     			if(genkey.equalsIgnoreCase(key)){
-	        		TelephonyManager mTelephonyMgr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+	        		//TelephonyManager mTelephonyMgr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
 	    	    	//String sIMEI = mTelephonyMgr.getDeviceId();
 	    	    	
 	    	    	//Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
@@ -1196,7 +1197,7 @@ public class EntryNote extends Activity implements LocationListener {
         	//tempstring = (dbAccess.getValue(coretable, "spinner_"+key)).split(",,");
     		tempstring2 = (dbAccess.getValue(coretable, "spinner_values_"+key)).split(",,");
         	if(def_vals.containsKey(key)){
-        		if(project_version > 1.0){
+        		/*if(project_version > 1.0){
         			pos = 0;
         			for (int i = 1; i < tempstring2.length; i++) {
         				if(def_vals.get(key).equals(tempstring2[i]))
@@ -1204,14 +1205,14 @@ public class EntryNote extends Activity implements LocationListener {
         			}
         			thisspinnerhash.get(key).setSelection(pos);
         		}
-        		else{
+        		else{*/
         			try{
         				int spos = Integer.parseInt(def_vals.get(key));
         				thisspinnerhash.get(key).setSelection(spos);
         			}
         			catch(NumberFormatException npe){
         			}
-        		}
+        		//}
  	    	}	  
         }
          
@@ -1349,7 +1350,7 @@ public class EntryNote extends Activity implements LocationListener {
         // If a primary key field is hidden need to reset it
         
         for(String key : hiddentextviewkeys){
-        	TelephonyManager mTelephonyMgr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+        	//TelephonyManager mTelephonyMgr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
         	//String sIMEI = mTelephonyMgr.getDeviceId();
     	
         	//Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
@@ -1824,7 +1825,7 @@ public class EntryNote extends Activity implements LocationListener {
 	    	// Don't want to display this field
 	    	if(nodisplay.contains(viewvalues[1])){
 	    		if(genkey.equalsIgnoreCase(viewvalues[1])){
-	        		TelephonyManager mTelephonyMgr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+	        		//TelephonyManager mTelephonyMgr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
 	    	    	//String sIMEI = mTelephonyMgr.getDeviceId();
 	    	    	
 	    	    	//Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
@@ -3237,7 +3238,7 @@ public class EntryNote extends Activity implements LocationListener {
 	 	    	}
 	 	    	
 	 	    	else if(def_vals.containsKey(viewvalues[1])){
-	 	    		if(project_version > 1.0){
+	 	    		/*if(project_version > 1.0){
 	 	    			pos = 0;
 	 	    			for (int i = 1; i < tempstring.length; i++) {
 	 	    				if(def_vals.get(viewvalues[1]).equals(tempstring2[i]))
@@ -3245,14 +3246,14 @@ public class EntryNote extends Activity implements LocationListener {
 	 	    			}
 	 	    			spin.setSelection(pos);
 	 	    		}
-	 	    		else{
+	 	    		else{*/
 	 	    			try{
 	 	    				int spos = Integer.parseInt(def_vals.get(viewvalues[1]));
 	 	    				spin.setSelection(spos);
 	 	    			}
 	 	    			catch(NumberFormatException npe){
 	 	    			}
-	 	    		}
+	 	    		//}
 	 	    	}	  
 	 	    	
 	 	    	spinnerposhash.put(page-1, viewvalues[1]);
@@ -3387,7 +3388,7 @@ public class EntryNote extends Activity implements LocationListener {
 	 	    	else if(def_vals.containsKey(viewvalues[1])){
 	 	    		int oldthispage = thispage;
 	 	    		
-	 	    		if(project_version > 1.0){
+	 	    		/*if(project_version > 1.0){
 	 	    			try{
 	 	    				sel = def_vals.get(viewvalues[1]);
 	 	    				thispage = page-1;
@@ -3399,7 +3400,7 @@ public class EntryNote extends Activity implements LocationListener {
 	 	    		
 	 	    			thispage = oldthispage;
 	 	    		}
-	 	    		else{
+	 	    		else{*/
 	 	    			try{
 	 	    				int spos = Integer.parseInt(def_vals.get(viewvalues[1]));
 	 	    				thispage = page-1;
@@ -3419,7 +3420,7 @@ public class EntryNote extends Activity implements LocationListener {
 	 	    			catch(Exception npe){
 	 	    			} 
 	 	    			thispage = oldthispage; 
-	 	    		}
+	 	    		//}
 	 	    	}
 	 	    	
 	 	    	//thisradiohash.get(radioposhash.get(thispage)).keySet()	    	
@@ -3813,7 +3814,7 @@ public class EntryNote extends Activity implements LocationListener {
 	    			//Log.i("SETTING SEL", key+" "+pos);
 	    		}
 	    		else if(def_vals.containsKey(key)){
-	    			if(project_version > 1.0){
+	    			/*if(project_version > 1.0){
 	    				pos = 0;
 	    				for (int i = 1; i < tempstring.length; i++) {
 	    					if(def_vals.get(key).equals(tempstring2[i]))
@@ -3821,14 +3822,14 @@ public class EntryNote extends Activity implements LocationListener {
 	    				}
 	    				thisspinnerhash.get(key).setSelection(pos);
 	    			}
-	    			else{
+	    			else{*/
 	    				try{
 	    					int spos = Integer.parseInt(def_vals.get(key));
 	    					thisspinnerhash.get(key).setSelection(spos);
 	    				}
 	    				catch(NumberFormatException npe){
 	    				}
-	    			}
+	    			//}
 	 	    	}	  
 	    		
 	    	//}
@@ -4589,7 +4590,20 @@ public class EntryNote extends Activity implements LocationListener {
 	    			if(val.startsWith("!"))
 	    				not = true;
 	    			val = val.replaceAll("!", "");
-	    			if(project_version <= 1.0){
+	    			
+	    			if(val.equalsIgnoreCase("Null"))
+	    				val = "0";
+	    			
+	    			//if(project_version <= 1.0){
+	    					int sel = thisspinnerhash.get(allitemposhashrev.get(thispage)).getSelectedItemPosition();
+	    					/*if(sel == 0 && (val.equalsIgnoreCase("0") || val.equalsIgnoreCase("Null"))){
+	    						try{
+	    							return allitemposhash.get(temp[i]);
+	    						}
+	    						catch(NullPointerException npe){
+	    							return 0;
+	    						}
+	    					}*/
 	    					try{
 	    						pos = Integer.parseInt(val);
 	    			  			}
@@ -4597,7 +4611,7 @@ public class EntryNote extends Activity implements LocationListener {
 	    						showAlert(this.getResources().getString(R.string.jump_error_1) +" " +spinnerposhash.get(thispage)+" "+this.getResources().getString(R.string.jump_error_2), this.getResources().getString(R.string.error));  //There is an error in the XML. Entry \"jump\" for "+spinnerposhash.get(thispage)+" must be an integer", "Error");
 	    						return 0;
 	    					}
-	    					int sel = thisspinnerhash.get(allitemposhashrev.get(thispage)).getSelectedItemPosition();	    	    			
+	    					//int sel = thisspinnerhash.get(allitemposhashrev.get(thispage)).getSelectedItemPosition();	    	    			
 	    	    			if((not && pos != sel) || (!not && pos == sel)){
 	    	    				if(temp[i].equalsIgnoreCase("End"))
 	    	    					return lastpage;
@@ -4610,27 +4624,20 @@ public class EntryNote extends Activity implements LocationListener {
 	    	    					}
 	    	    				}
 	    	    			}
-	    				}
-	    			else{
-	    				
-	    				/*String[] tempstring = dbAccess.getValue(coretable, "spinner_"+spinnerposhash.get(thispage)).split(",,");
-	    	    		String[] tempstring2 = dbAccess.getValue(coretable, "spinner_values_"+spinnerposhash.get(thispage)).split(",,");
-	    	    		
-	    	    		
-	    	    		String value;
-	    	    		value = thisspinnerhash.get(spinnerposhash.get(thispage)).getSelectedItem().toString();
-	    	    		int j = 0;
-	    	    		//boolean match = false;
-	    	    		for(j = 0; j < tempstring.length; j++){
-	    	    			if(tempstring[j].equalsIgnoreCase(value)){
-	    	    				//match = true;
-	    	    				break;
-	    	    			}
-	    	    		}*/
+	    				//}
+	    			/*else{
 	    				
 	    				selected = spinnervalshash.get(spinnerposhash.get(thispage)+"_"+thisspinnerhash.get(allitemposhashrev.get(thispage)).getSelectedItemPosition()); //tempstring2[j]; //thisspinnerhash.get(allitemposhashrev.get(thispage)).getSelectedItem().toString(); //Position();
 	    			
 	    				//Log.i("SPINNER JUMP", selected +" "+val);
+	    				if(selected.equals("0") && (val.equals("0") || val.equalsIgnoreCase("Null"))){
+	    					try{
+    							return allitemposhash.get(temp[i]);
+    						}
+    						catch(NullPointerException npe){
+    							return 0;
+    						}
+	    				}
 	    				if((not && !val.equalsIgnoreCase(selected)) || (!not && val.equalsIgnoreCase(selected))){
 	    					if(temp[i].equalsIgnoreCase("End"))
 	    						return lastpage;
@@ -4643,7 +4650,7 @@ public class EntryNote extends Activity implements LocationListener {
 	    						}
 	    					}
 	    				}
-	    			}
+	    			}*/
 	    		}	
 	    		
 	    		return 0;
@@ -4672,12 +4679,19 @@ public class EntryNote extends Activity implements LocationListener {
 	    					}
 	    				}
 	    			}
+	    			
+	    			if(val.equalsIgnoreCase("Null")){
+
+	    			}
 	    		
 	    			boolean not = false;
 	    			if(val.startsWith("!"))
 	    				not = true;
 	    			val = val.replaceAll("!", "");
-	    			if(project_version <= 1.0){
+	    			if(val.equalsIgnoreCase("Null")){
+	    				val = "-1"; // This is the value returned by getCheckedRadioButtonId() if no button is selected
+	    			}
+	    			//if(project_version <= 1.0){
 	    				try{
 	    					pos = Integer.parseInt(val);
 	    			    			
@@ -4690,6 +4704,8 @@ public class EntryNote extends Activity implements LocationListener {
 	    				int rbid = jumpradiohash.get(thispage).getCheckedRadioButtonId();    	
 	    				View rb = jumpradiohash.get(thispage).findViewById(rbid);
 	    				int sel = jumpradiohash.get(thispage).indexOfChild(rb) + 1;
+	    				if(pos == -1) // If nothing is selected then sel won't match pos
+	    					sel = -1;
 	    				
 	    				if((not && pos != sel) || (!not && pos == sel)){
 		    				if(temp[i].equalsIgnoreCase("End"))
@@ -4704,8 +4720,8 @@ public class EntryNote extends Activity implements LocationListener {
 		    				}
 		    			}
 	    				
-	    			}
-	    			else{
+	    			//}
+	    			/*else{
 	    				selected = radioselectedhash.get(allitemposhashrev.get(thispage));
 	    			
 	    				if((not && !val.equalsIgnoreCase(selected)) || (!not && val.equalsIgnoreCase(selected))){
@@ -4720,7 +4736,7 @@ public class EntryNote extends Activity implements LocationListener {
 	    						}
 	    					}
 	    				}
-	    			}
+	    			} */
 	    		}
 	    		
 	    		return 0;
@@ -4731,16 +4747,31 @@ public class EntryNote extends Activity implements LocationListener {
 	    		//if(val.equalsIgnoreCase("All"))
 	    		//	return allitemposhash.get(jumps.get(query)[1]);
 	    		Vector<String> checkvec = new Vector<String>();
+	    		int nullcheck = 1;
 	    		for(String key : checkboxes){
 	    			//Log.i("JUMP CHECK 1", key);
-	    			if(checkboxhash.get(key).isChecked())
+	    			if(checkboxhash.get(key).isChecked()){
 	    				checkvec.addElement(key);
+	    				nullcheck = 0;
+	    			}
 	    		}
 	    		query = checkboxposhash.get(thispage);
 	    		temp = jumps.get(query).split(",");
 	    		for(int i = 1; i < temp.length; i+=2){
 	    			//Log.i("JUMP CHECK 2", temp[i]+" "+temp[i+1]);
 	    			val = temp[i+1];
+	    			
+	    			if(val.equalsIgnoreCase("Null")){
+	    				if(nullcheck == 1){
+	    					try{
+	    						return allitemposhash.get(temp[i]);
+	    					}
+	    					catch(NullPointerException npe){
+	    						return 0;
+	    					}
+	    				}
+	    			}
+	    			
 	    			if(val.equalsIgnoreCase("All")){
 	    				if(temp[i].equalsIgnoreCase("End"))
 	    					return lastpage;
@@ -7012,8 +7043,9 @@ public class EntryNote extends Activity implements LocationListener {
 	    	if(photoid.equalsIgnoreCase("-1") || photoid.length() == 0){
 	    		Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 	    	   	date = ""+cal.getTimeInMillis();
-	    		TelephonyManager mTelephonyMgr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
-	    		imagefile = coretable+"_"+id+"_"+mTelephonyMgr.getDeviceId()+ "_"+date+".jpg";
+	    		//TelephonyManager mTelephonyMgr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+	    		//imagefile = coretable+"_"+id+"_"+mTelephonyMgr.getDeviceId()+ "_"+date+".jpg";
+	    		imagefile = coretable+"_"+id+"_"+UUID.randomUUID().toString()+".jpg";
 	    	}
 	    	else
 	    		imagefile = photoid;
@@ -7100,8 +7132,9 @@ public class EntryNote extends Activity implements LocationListener {
 			Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 	    	   	
 	    	String date = ""+cal.getTimeInMillis();
-	    	TelephonyManager mTelephonyMgr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
-	    	audioid = coretable+"_"+id+"_"+mTelephonyMgr.getDeviceId()+ "_"+date+".3gp";
+	    	//TelephonyManager mTelephonyMgr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+	    	//audioid = coretable+"_"+id+"_"+mTelephonyMgr.getDeviceId()+ "_"+date+".3gp";
+	    	audioid = coretable+"_"+id+"_"+UUID.randomUUID().toString()+".3gp";
 	    	
 	    	
 		}
@@ -7264,6 +7297,14 @@ public class EntryNote extends Activity implements LocationListener {
 	
 	private boolean checkEntry(){ //int page){
 		
+		/*
+		 * For primary key field second check is set to true otherwise if someone scrolls back top this field they can't proceed forward again 
+		 * due to warning about key existing.
+		 * For location field second check is set to tru so they can proceed and add location later if they are having problems getting a location lock.
+		 * For images, video and audio second check is set to tru so they can proceed if it isn't possible to take picture or video or record ausio.
+		 * For all other fields second check is set to false so if field is required they must enter value to continue.
+		 * 
+		 */
 		if(fromdetails)
 			return true;
 		
@@ -7322,7 +7363,7 @@ public class EntryNote extends Activity implements LocationListener {
     			
        			if(primary_keys.contains(key)){
        				showCheckAlert(this.getResources().getString(R.string.key_required_1)+" "+ key+".<br>"+this.getResources().getString(R.string.key_required_2)); // "Value required for primary key field "+ key+".<br>Entry cannot be stored"
-        			secondcheck = true;
+        			secondcheck = false; //true;
 					return false;
         		}
     			//if(key.equalsIgnoreCase(coretablekey)){ //(textviewhash.get(coretablekey).getText().toString() == null) || (textviewhash.get(coretablekey).getText().toString().equalsIgnoreCase(""))){
@@ -7330,7 +7371,7 @@ public class EntryNote extends Activity implements LocationListener {
             	//		secondcheck = true;
     			//		return false;
     			//	}
-    			secondcheck = true;
+    			secondcheck = false; //true;
     			showCheckAlert(this.getResources().getString(R.string.value_required)); //"WARNING: Value is a required field");
     			return false;
     			
@@ -7381,7 +7422,7 @@ public class EntryNote extends Activity implements LocationListener {
     			// be shown as it is already in the database
     			else if(genkey.length() == 0){
     				showCheckAlert(this.getResources().getString(R.string.entry_exists_1)); //+".<br>"+this.getResources().getString(R.string.entry_exists_2)); // "Entry exists for this primary key "+primary_key+".<br>Any changes to record cannot be undone"
-    				secondcheck = false;  //true;
+    				secondcheck = true; //false;  //true;
     				noerrors = false; 	
     				secondkeycheck = true;
     			}
@@ -7427,13 +7468,13 @@ public class EntryNote extends Activity implements LocationListener {
     		if(thisspinnerhash.get(key).getSelectedItemPosition() == 0){
     			if(primary_keys.contains(key)){
        				showCheckAlert(this.getResources().getString(R.string.key_required_1)+" "+ key+".<br>"+this.getResources().getString(R.string.key_required_2)); // "Value required for primary key field "+ key+".<br>Entry cannot be stored"
-        			secondcheck = true;
+        			secondcheck = false; //true;
         			noerrors = false;
     				//return false;
         		}
     			else if(requiredspinners.contains(key)){
     				showCheckAlert(this.getResources().getString(R.string.value_required)); //"WARNING: Value is required");
-    				secondcheck = true;
+    				secondcheck = false; //true;
     				noerrors = false;
 					//return false;
     			}
@@ -7446,13 +7487,13 @@ public class EntryNote extends Activity implements LocationListener {
 			if(radioselectedhash.get(key).equals("")){
 				if(primary_keys.contains(key)){
        				showCheckAlert(this.getResources().getString(R.string.key_required_1)+" "+ key+".<br>"+this.getResources().getString(R.string.key_required_2)); // "Value required for primary key field "+ key+".<br>Entry cannot be stored"
-        			secondcheck = true;
+        			secondcheck = false; //true;
         			noerrors = false;
     				//return false;
         		}
 				else if(requiredradios.contains(key)){
 					showCheckAlert(this.getResources().getString(R.string.value_required)); //"WARNING: Value is required");
-					secondcheck = true;
+					secondcheck = false; //true;
 					noerrors = false;
 					//return false;
 				}

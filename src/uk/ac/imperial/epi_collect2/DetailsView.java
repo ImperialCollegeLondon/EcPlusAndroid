@@ -618,6 +618,7 @@ private LinearLayout setLayout(String table, Bundle extras){
 	        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 	        	
 	        	//if(change_synch || !status.equalsIgnoreCase("R"))
+	        	if(!status.equalsIgnoreCase("R"))
 	        		editData(position); //listindex.get(position));
 	        	
 	        }
@@ -946,6 +947,7 @@ private LinearLayout setLayout(String table, Bundle extras){
 				 
 		Intent i = new Intent(this, EntryNote.class);
 		
+		Log.i("Target", listpos.get(position));
 		extras.putString("target", listpos.get(position));
     	if(frombranch)
     		extras.putInt("branch", 1); // WAS FROMBRANCH

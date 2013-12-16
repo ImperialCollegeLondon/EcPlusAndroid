@@ -44,6 +44,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.LocationManager;
@@ -56,7 +57,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings.Secure;
-import android.telephony.TelephonyManager;
+//import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -87,7 +88,7 @@ import android.widget.ImageView;
 @SuppressLint("NewApi")
 public class Epi_collect extends Activity implements Runnable{
 	
-	private static final String APK_VERSION = "1.8"; //"1.0"; // SCORE 2.2 // "2.6.16"; //
+	private static String APK_VERSION = "0"; // = "1.11"; //"1.0"; // SCORE 2.2 // "2.6.16"; //
 	private static final int ACTIVITY_NEW = 0;
 	private static final int ACTIVITY_EMAIL = 13;
 	private static final int ACTIVITY_EMAIL2 = 20;
@@ -99,7 +100,7 @@ public class Epi_collect extends Activity implements Runnable{
     private static final int SYNCH_AUDIO_ID = 6;
     private static final int DEL_MEDIA_ID = 7;
     private static final int RESET_SYNCH_ID = 8;
-    private static final int REGISTER_ID = 9;
+    //private static final int REGISTER_ID = 9;
     private static final int DEL_SYNCH = 10;
     private static final int DEL_REM = 11;
     private static final int DEL_ALL = 12;
@@ -153,6 +154,16 @@ public class Epi_collect extends Activity implements Runnable{
         	}
         catch(Exception e){
         	showAlert(this.getResources().getString(R.string.error), this.getResources().getString(R.string.card_error)); //"Error", "SD card not present. Required for photo, video and audio capture");
+        }
+        
+        // Get the apk version from the AndroidManifest.xml file
+        try
+        {
+        	APK_VERSION = this.getPackageManager().getPackageInfo(this.getPackageName(), 0).versionName;
+        }
+        catch (NameNotFoundException e)
+        {
+            Log.i("Version", e.getMessage());
         }
         
         dbAccess = new DBAccess(this);
@@ -552,9 +563,9 @@ public class Epi_collect extends Activity implements Runnable{
 		case RESET_SYNCH_ID:
 			showResetSynchAlert();
     		break;
-		case REGISTER_ID:
-			registerPhone();
-    		break;
+		//case REGISTER_ID:
+		//	registerPhone();
+    	//	break;
 		case DEL_ALL:
 			showDeleteAllEntriesAlert();
     		break;
@@ -606,7 +617,7 @@ public class Epi_collect extends Activity implements Runnable{
     	}
     	
    	
-    	if(newproject.startsWith("SD_")|| newproject.startsWith("sd_")){
+    	if(newproject.startsWith("SD_")){ //|| newproject.startsWith("sd_")){
      		if(!newproject.endsWith(".xml"))
      			newproject = newproject + ".xml";
     		parseXML = new ParseXML(newproject);   
@@ -1944,7 +1955,7 @@ public class Epi_collect extends Activity implements Runnable{
     	//thread.stop();
     }
     
-    private void registerPhone(){
+   /* private void registerPhone(){
     	Account[] accounts = AccountManager.get(this).getAccounts();
     	for (Account account : accounts) {
     	  // TODO: Check possibleEmail against an email regex or treat
@@ -1952,18 +1963,19 @@ public class Epi_collect extends Activity implements Runnable{
     	  String possibleEmail = account.name;
     	  if(account.type.equalsIgnoreCase("com.google") && possibleEmail.contains("@gmail.com")){
     		  
-    		  TelephonyManager mTelephonyMgr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+    		  //TelephonyManager mTelephonyMgr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+    		  final String android_id = Secure.getString(this.getContentResolver(), Secure.ANDROID_ID);
     		  final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
     		  emailIntent.setType("plain/text");
     		  emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{ dbAccess.getValue("reg_email")});
     		  emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, this.getResources().getString(R.string.email_1)); //"EpiCollect Phone Registraion");
-    		  emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, this.getResources().getString(R.string.email_2)+": "+possibleEmail+"\n"+this.getResources().getString(R.string.email_3)+": "+mTelephonyMgr.getDeviceId()); // "Register Email: "+possibleEmail+"\nPhone ID: "+mTelephonyMgr.getDeviceId())
+    		  emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, this.getResources().getString(R.string.email_2)+": "+possibleEmail+"\n"+this.getResources().getString(R.string.email_3)+": "+android_id); // "Register Email: "+possibleEmail+"\nPhone ID: "+mTelephonyMgr.getDeviceId())
     		  startActivityForResult(Intent.createChooser(emailIntent, this.getResources().getString(R.string.email_4)+"..."), ACTIVITY_EMAIL);
     		  return;
     	  }
     	}
 
-    }
+    } */
     
 
     
@@ -2005,7 +2017,7 @@ public class Epi_collect extends Activity implements Runnable{
     	}
     	
     	try{
-        	File f = new File(appFiles+"/"+selected_project+"/"+android_id+"_data_backup.xml.zip");
+        	File f = new File(appFiles+"/"+selected_project+"/"+android_id+"_data_backup.txt");
         	if(!f.exists()){
         		showAlert(this.getResources().getString(R.string.error), this.getResources().getString(R.string.backup_not_present)); //"Error", "Backup file not present, backup project first");
         		return;
@@ -2020,14 +2032,15 @@ public class Epi_collect extends Activity implements Runnable{
     	  String possibleEmail = account.name;
     	  if(account.type.equalsIgnoreCase("com.google") && possibleEmail.contains("@gmail.com")){
     		  
-    		  TelephonyManager mTelephonyMgr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+    		  //TelephonyManager mTelephonyMgr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+    		  final String android_id = Secure.getString(this.getContentResolver(), Secure.ANDROID_ID);
     		  final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
     		  emailIntent.setType("plain/text");
     		  emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{ dbAccess.getValue("reg_email")});
     		  emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, this.getResources().getString(R.string.email_5)+" - "+selected_project);
-    		  emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, this.getResources().getString(R.string.email_6)+" - "+selected_project+"\n\n"+this.getResources().getString(R.string.email_3)+": "+mTelephonyMgr.getDeviceId());
+    		  emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, this.getResources().getString(R.string.email_6)+" - "+selected_project+"\n\n"+this.getResources().getString(R.string.email_3) +": "+android_id); // +": "+mTelephonyMgr.getDeviceId()
     		  try{
-	            	File f = new File(appFiles+"/"+selected_project+"/"+android_id+"_data_backup.xml.zip");
+	            	File f = new File(appFiles+"/"+selected_project+"/"+android_id+"_data_backup.txt");
 	            	if(f.exists())
 	            		emailIntent.putExtra(android.content.Intent.EXTRA_STREAM, Uri.fromFile(f));
 	            	}
