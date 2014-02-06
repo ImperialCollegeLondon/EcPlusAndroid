@@ -55,10 +55,22 @@ public class ImageViewer extends Activity {
 	         if (extras != null && extras.getString("IMAGE_ID") != null){
 	        	// Log.i("IMAGE FILE", imagedir+"/"+extras.getString("IMAGE_ID"));
 	        	 File f = new File(imagedir+"/"+extras.getString("IMAGE_ID"));
-	        	 if(f.exists()) 
-	        		 imageView.setImageURI(Uri.parse(imagedir+"/"+extras.getString("IMAGE_ID")));
-	        	 else
-	        		 imageView.setImageURI(Uri.parse(thumbdir+"/"+extras.getString("IMAGE_ID")));
+	        	 if(!f.exists())
+	        		 f = new File(thumbdir+"/"+extras.getString("IMAGE_ID"));
+	        	 
+	        	 // Load the largest size we can without getting OutOfMemoryError
+	        	 final BitmapFactory.Options opts = new BitmapFactory.Options();
+	        	 opts.inSampleSize = 1;
+	        	 boolean repeat = true;
+	        	 while(repeat)
+	        	 try{
+	        		 repeat = false;
+	        		 imageView.setImageBitmap(BitmapFactory.decodeFile(f.getAbsolutePath(), opts));
+	        	 }catch(OutOfMemoryError e){
+	        		 System.gc();
+	        		 repeat = true;
+	        		 opts.inSampleSize *=2;
+	        	 }
 	         }
 	         else{
 	        	 showAlert(this.getResources().getString(R.string.image_problem)); //"Problem with image!");
@@ -84,6 +96,9 @@ public class ImageViewer extends Activity {
        	  	this.getIntent().putExtras(extras);
        	  	setResult(RESULT_OK, this.getIntent());
        	  	finish();  
+       	  	
+       	  	// release memory used for image
+       	  	imageView.setImageDrawable(null);
 	     }
 	     
 	     public void showAlert(String result){
